@@ -52,13 +52,28 @@ export default function PlannerPage() {
     setTimeout(() => setFlash(""), 4000);
   }
 
-  function saveStop(stop: Stop) {
+  async function saveStop(stop: Stop) {
     if (!route) return;
     const exists = route.stops.some((s) => s.id === stop.id);
     const stops = exists ? route.stops.map((s) => (s.id === stop.id ? stop : s)) : [...route.stops, stop];
     // route is niet meer actueel na wijziging stops
-    persist({ ...route, stops, geometry: undefined, distanceKm: undefined, durationMinutes: undefined });
+    await persist({ ...route, stops, geometry: undefined, distanceKm: undefined, durationMinutes: undefined });
     setModalStop(null);
+
+    // nieuwe stop: klant direct informeren via webhook
+    if (!exists && (stop.email || stop.phone)) {
+      const res = await fetch("/api/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ routeId: route.id, event: "stop_added", stopId: stop.id }),
+      });
+      const data = await res.json();
+      showFlash(
+        data.sent > 0
+          ? `Stop toegevoegd. Klant geïnformeerd (${data.sent} webhook${data.sent > 1 ? "s" : ""} verzonden).`
+          : "Stop toegevoegd, maar webhook versturen mislukt."
+      );
+    }
   }
 
   function removeStop(stopId: string) {

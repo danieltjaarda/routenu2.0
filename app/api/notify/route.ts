@@ -26,7 +26,7 @@ function formatDate(date: string): string {
 
 /**
  * Verstuurt webhooks voor een route.
- * body: { routeId: string, event: "planned" | "started" | "stop_completed", stopId?: string }
+ * body: { routeId: string, event: "planned" | "started" | "stop_added" | "stop_completed", stopId?: string }
  */
 export async function POST(req: NextRequest) {
   const { routeId, event, stopId } = await req.json();
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   const payloads: WebhookPayload[] = [];
 
   const stopsToNotify =
-    event === "stop_completed" && stopId
+    (event === "stop_completed" || event === "stop_added") && stopId
       ? route.stops.filter((s) => s.id === stopId)
       : route.stops;
 
@@ -58,6 +58,9 @@ export async function POST(req: NextRequest) {
     } else if (event === "stop_completed") {
       emailBody = `<p>Beste ${stop.customerName},</p><p>Uw ${typeLabel} op ${stop.address} is afgerond. Bedankt!</p><p>Met vriendelijke groet,<br/>RouteNu</p>`;
       messageText = `Beste ${stop.customerName}, uw ${typeLabel} op ${stop.address} is afgerond. Bedankt!`;
+    } else if (event === "stop_added") {
+      emailBody = `<p>Beste ${stop.customerName},</p><p>Uw ${typeLabel} is ingepland op ${dateStr}.</p><p>Adres: ${stop.address}</p>${stop.notes ? `<p>Opdracht: ${stop.notes}</p>` : ""}<p>U ontvangt nog een bericht met het verwachte tijdvak.</p><p>Met vriendelijke groet,<br/>RouteNu</p>`;
+      messageText = `Beste ${stop.customerName}, uw ${typeLabel} is ingepland op ${dateStr}. Adres: ${stop.address}.${stop.notes ? ` Opdracht: ${stop.notes}.` : ""} U ontvangt nog een bericht met het verwachte tijdvak.`;
     } else {
       emailBody = `<p>Beste ${stop.customerName},</p><p>Uw ${typeLabel} staat ingepland op ${dateStr}${eta ? ` tussen <strong>${eta}</strong>` : ""}.</p><p>Adres: ${stop.address}</p><p>Met vriendelijke groet,<br/>RouteNu</p>`;
       messageText = `Beste ${stop.customerName}, uw ${typeLabel} staat ingepland op ${dateStr}${eta ? ` tussen ${eta}` : ""}. Adres: ${stop.address}.`;
