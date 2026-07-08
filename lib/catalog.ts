@@ -21,7 +21,7 @@ export const BRANDS: BikeBrand[] = [
     name: "QMWHEEL",
     logo: "/brands/qmwheel.webp",
     models: [
-      { id: "v20-pro", name: "V20 (PRO)", image: "/bikes/qmwheel-v20-pro.jpg" },
+      { id: "v20-pro", name: "V20", image: "/bikes/qmwheel-v20-pro.jpg" },
       { id: "v20-max-pro", name: "V20 MAX (PRO)", image: "/bikes/qmwheel-v20-max-pro.png" },
       { id: "v20-mini", name: "V20 MINI", image: "/bikes/qmwheel-v20-mini.png" },
       { id: "s20-pro", name: "S20 (PRO)", image: "/bikes/qmwheel-s20-pro.png" },
