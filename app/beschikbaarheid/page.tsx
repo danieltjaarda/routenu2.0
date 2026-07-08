@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Driver, Availability } from "@/lib/types";
 import { PROVINCES } from "@/lib/types";
 
@@ -65,18 +65,23 @@ export default function AvailabilityPage() {
     return entry.provinces && entry.provinces.length > 0 ? entry.provinces : [...PROVINCES];
   }
 
-  async function save(date: string, available: boolean, provinces: string[]) {
+  // opslagacties na elkaar uitvoeren zodat snelle klikken elkaar niet overschrijven
+  const saveQueue = useRef<Promise<unknown>>(Promise.resolve());
+
+  function save(date: string, available: boolean, provinces: string[]) {
     const allSelected = provinces.length === PROVINCES.length;
     setAvailability((prev) => {
       const rest = prev.filter((a) => !(a.date === date && a.driverId === driverId));
       if (!available) return rest;
       return [...rest, { date, driverId, ...(allSelected ? {} : { provinces }) }];
     });
-    await fetch("/api/availability", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ date, driverId, available, provinces: allSelected ? undefined : provinces }),
-    });
+    saveQueue.current = saveQueue.current.then(() =>
+      fetch("/api/availability", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date, driverId, available, provinces: allSelected ? undefined : provinces }),
+      }).catch(() => {})
+    );
   }
 
   function toggleDay(date: string) {
