@@ -9,21 +9,6 @@ function toDateStr(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-const PROV_SHORT: Record<string, string> = {
-  Groningen: "GR",
-  Friesland: "FR",
-  Drenthe: "DR",
-  Overijssel: "OV",
-  Flevoland: "FL",
-  Gelderland: "GD",
-  Utrecht: "UT",
-  "Noord-Holland": "NH",
-  "Zuid-Holland": "ZH",
-  Zeeland: "ZL",
-  "Noord-Brabant": "NB",
-  Limburg: "LB",
-};
-
 export default function AvailabilityPage() {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [driverId, setDriverId] = useState("");
@@ -32,6 +17,8 @@ export default function AvailabilityPage() {
   const [weeks, setWeeks] = useState(4);
   // provincies die gebruikt worden bij het aanzetten van een nieuwe dag
   const [defaultProvinces, setDefaultProvinces] = useState<string[]>([...PROVINCES]);
+  // datum waarvoor de kaart-popup open staat
+  const [mapDate, setMapDate] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -189,23 +176,48 @@ export default function AvailabilityPage() {
                   </span>
                 </button>
                 {on && (
-                  <div className="pchips small">
-                    {PROVINCES.map((p) => (
-                      <button
-                        key={p}
-                        type="button"
-                        className={`pchip ${provs.includes(p) ? "on" : ""}`}
-                        onClick={() => toggleProvince(date, p)}
-                        title={p}
-                      >
-                        {PROV_SHORT[p]}
-                      </button>
-                    ))}
-                  </div>
+                  <button type="button" className="show-map" onClick={() => setMapDate(date)}>
+                    🗺 Kaart tonen
+                  </button>
                 )}
               </div>
             );
           })}
+        </div>
+      )}
+
+      {mapDate && (
+        <div className="modal-backdrop">
+          <div className="modal" style={{ maxWidth: 480 }}>
+            <button className="close" onClick={() => setMapDate(null)}>✕</button>
+            <h2 style={{ textTransform: "capitalize" }}>
+              {new Date(mapDate + "T00:00:00").toLocaleDateString("nl-NL", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+              })}
+            </h2>
+            <p style={{ fontSize: 13, color: "var(--muted)", marginTop: -10 }}>
+              Klik op de kaart de provincies aan die op deze dag boekbaar zijn.
+            </p>
+            <NLMap
+              selected={provincesFor(mapDate)}
+              onToggle={(p) => toggleProvince(mapDate, p)}
+            />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 14 }}>
+              <span style={{ fontSize: 13, color: "var(--muted)" }}>
+                {provincesFor(mapDate).length === PROVINCES.length
+                  ? "Heel Nederland"
+                  : `${provincesFor(mapDate).length} provincie${provincesFor(mapDate).length === 1 ? "" : "s"} geselecteerd`}
+              </span>
+              <span style={{ display: "flex", gap: 10 }}>
+                <button className="btn ghost small" onClick={() => save(mapDate, true, [...PROVINCES])}>
+                  Alles
+                </button>
+                <button className="btn small" onClick={() => setMapDate(null)}>Klaar</button>
+              </span>
+            </div>
+          </div>
         </div>
       )}
     </div>

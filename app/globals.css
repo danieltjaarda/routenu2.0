@@ -427,7 +427,21 @@ table.data tr:hover td { background: var(--bg); }
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 .pchip.on { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 600; }
-.pchips.small .pchip { padding: 2px 6px; font-size: 10px; font-weight: 700; }
+
+.avail-day .show-map {
+  border: 1px dashed var(--border);
+  background: #fff;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: var(--primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.avail-day .show-map:hover { border-color: var(--primary); background: #f0fbfe; }
 
 .default-provs {
   border: 1px solid var(--border);
