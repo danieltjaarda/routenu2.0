@@ -45,19 +45,21 @@ export default function AnalyticsPage() {
     const revenue = filtered.reduce((s, r) => s + routeRevenue(r), 0);
     const costs = filtered.reduce((s, r) => s + routeCosts(r), 0);
     const km = filtered.reduce((s, r) => s + routeKm(r), 0);
+    const hours = filtered.reduce((s, r) => s + (r.workedHours ?? 0), 0);
     const stopsDone = filtered.reduce((s, r) => s + r.stops.filter((x) => x.status === "afgerond").length, 0);
     const stopsTotal = filtered.reduce((s, r) => s + r.stops.length, 0);
-    return { revenue, costs, km, stopsDone, stopsTotal, profit: revenue - costs };
+    return { revenue, costs, km, hours, stopsDone, stopsTotal, profit: revenue - costs };
   }, [filtered]);
 
   const perDriver = useMemo(() => {
-    const map = new Map<string, { revenue: number; costs: number; routes: number; km: number }>();
+    const map = new Map<string, { revenue: number; costs: number; routes: number; km: number; hours: number }>();
     for (const r of filtered) {
       const key = r.driverId ?? "-";
-      const entry = map.get(key) ?? { revenue: 0, costs: 0, routes: 0, km: 0 };
+      const entry = map.get(key) ?? { revenue: 0, costs: 0, routes: 0, km: 0, hours: 0 };
       entry.revenue += routeRevenue(r);
       entry.costs += routeCosts(r);
       entry.km += routeKm(r);
+      entry.hours += r.workedHours ?? 0;
       entry.routes += 1;
       map.set(key, entry);
     }
@@ -115,6 +117,11 @@ export default function AnalyticsPage() {
               <div className="sub">o.b.v. kilometerstanden</div>
             </div>
             <div className="stat-card">
+              <div className="label">Gewerkte uren</div>
+              <div className="value">{totals.hours.toLocaleString("nl-NL")} uur</div>
+              <div className="sub">ingevuld door chauffeurs</div>
+            </div>
+            <div className="stat-card">
               <div className="label">Stops afgerond</div>
               <div className="value">{totals.stopsDone} / {totals.stopsTotal}</div>
             </div>
@@ -128,6 +135,7 @@ export default function AnalyticsPage() {
                   <th>Chauffeur</th>
                   <th>Routes</th>
                   <th>Kilometers</th>
+                  <th>Uren</th>
                   <th>Omzet</th>
                   <th>Kosten</th>
                   <th>Resultaat</th>
@@ -139,6 +147,7 @@ export default function AnalyticsPage() {
                     <td style={{ fontWeight: 600, color: "var(--dark)" }}>{driverName(id)}</td>
                     <td>{v.routes}</td>
                     <td>{v.km.toFixed(0)} km</td>
+                    <td>{v.hours ? `${v.hours.toLocaleString("nl-NL")} uur` : "-"}</td>
                     <td>{eur(v.revenue)}</td>
                     <td>{eur(v.costs)}</td>
                     <td style={{ fontWeight: 600 }}>{eur(v.revenue - v.costs)}</td>
@@ -158,6 +167,7 @@ export default function AnalyticsPage() {
                   <th>Chauffeur</th>
                   <th>Stops</th>
                   <th>Kilometers</th>
+                  <th>Uren</th>
                   <th>Omzet</th>
                   <th>Kosten</th>
                   <th>Status</th>
@@ -165,7 +175,7 @@ export default function AnalyticsPage() {
               </thead>
               <tbody>
                 {filtered.length === 0 && (
-                  <tr><td colSpan={8} className="empty">Geen routes in deze periode.</td></tr>
+                  <tr><td colSpan={9} className="empty">Geen routes in deze periode.</td></tr>
                 )}
                 {filtered.map((r) => (
                   <tr key={r.id}>
@@ -176,6 +186,7 @@ export default function AnalyticsPage() {
                     <td>{driverName(r.driverId)}</td>
                     <td>{r.stops.filter((s) => s.status === "afgerond").length} / {r.stops.length}</td>
                     <td>{routeKm(r) ? `${routeKm(r).toFixed(0)} km` : "-"}</td>
+                    <td>{r.workedHours != null ? `${r.workedHours.toLocaleString("nl-NL")} uur` : "-"}</td>
                     <td>{eur(routeRevenue(r))}</td>
                     <td>{eur(routeCosts(r))}</td>
                     <td><span className={`badge ${r.status}`}>{r.status}</span></td>

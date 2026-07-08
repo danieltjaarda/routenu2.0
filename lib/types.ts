@@ -49,6 +49,8 @@ export interface Route {
   completedAt?: string;
   startOdometer?: number;
   endOdometer?: number;
+  /** Door de chauffeur ingevulde gewerkte uren */
+  workedHours?: number;
   createdAt: string;
 }
 

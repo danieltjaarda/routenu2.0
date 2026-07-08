@@ -16,6 +16,7 @@ export default function DriverRoutePage() {
   const [route, setRoute] = useState<Route | null>(null);
   const [startOdometer, setStartOdometer] = useState("");
   const [endOdometer, setEndOdometer] = useState("");
+  const [workedHours, setWorkedHours] = useState("");
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState("");
 
@@ -26,6 +27,7 @@ export default function DriverRoutePage() {
         setRoute(r);
         if (r.startOdometer != null) setStartOdometer(String(r.startOdometer));
         if (r.endOdometer != null) setEndOdometer(String(r.endOdometer));
+        if (r.workedHours != null) setWorkedHours(String(r.workedHours));
       });
   }, [id]);
 
@@ -99,6 +101,10 @@ export default function DriverRoutePage() {
       showFlash("Vul eerst de kilometerstand in.");
       return;
     }
+    if (!workedHours) {
+      showFlash("Vul eerst je gewerkte uren in.");
+      return;
+    }
     setBusy(true);
     try {
       await persist({
@@ -107,6 +113,7 @@ export default function DriverRoutePage() {
         completedAt: new Date().toISOString(),
         endOdometer: parseFloat(endOdometer),
         startOdometer: startOdometer ? parseFloat(startOdometer) : route.startOdometer,
+        workedHours: parseFloat(workedHours.replace(",", ".")),
       });
       router.push("/analytics");
     } finally {
@@ -250,6 +257,10 @@ export default function DriverRoutePage() {
             Kilometerstand einde rit <span className="req">*</span>
             <input type="number" min="0" placeholder="Bijv. 123789" value={endOdometer} onChange={(e) => setEndOdometer(e.target.value)} />
           </label>
+          <label className="field" style={{ maxWidth: 260 }}>
+            Gewerkte uren <span className="req">*</span>
+            <input type="number" min="0" step="0.5" placeholder="Bijv. 7,5" value={workedHours} onChange={(e) => setWorkedHours(e.target.value)} />
+          </label>
           <button className="btn secondary" onClick={finishRoute} disabled={busy}>
             {busy ? "Afronden..." : "Route afronden"}
           </button>
@@ -263,6 +274,11 @@ export default function DriverRoutePage() {
             <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 6 }}>
               Gereden: {(route.endOdometer - route.startOdometer).toFixed(0)} km
               ({route.startOdometer} → {route.endOdometer})
+            </div>
+          )}
+          {route.workedHours != null && (
+            <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 4 }}>
+              Gewerkte uren: {String(route.workedHours).replace(".", ",")}
             </div>
           )}
         </div>
