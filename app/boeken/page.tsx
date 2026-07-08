@@ -287,8 +287,7 @@ export default function BookingPage() {
 
   return (
     <div className="page" style={{ maxWidth: 720 }}>
-      <h1>Reparatie aanmelden</h1>
-      <p className="subtitle">Meld uw fatbike aan voor reparatie aan huis, in een paar stappen.</p>
+      <h1>Reparatie aan huis</h1>
 
       <div className={step === 2 ? "step-bare" : "card"} style={{ marginTop: 18, overflow: "hidden" }}>
         <div key={step} className={`step-pane ${slideDir}`}>
@@ -419,11 +418,6 @@ export default function BookingPage() {
               )}
             </div>
 
-            <p style={{ fontSize: 13, color: "var(--muted)" }}>
-              Of selecteer zelf één of meerdere reparaties. Staat jouw reparatie er niet tussen? Kies dan &lsquo;Overige&rsquo;.
-              <br />
-              <strong>Alle prijzen zijn inclusief onderdelen.</strong>
-            </p>
             <div className="repair-grid">
               {sortedServices.map((s) => {
                 const on = selectedRepairs.includes(s.slug);
