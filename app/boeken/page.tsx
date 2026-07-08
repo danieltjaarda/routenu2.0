@@ -455,7 +455,12 @@ export default function BookingPage() {
             {selectedRepairs.length > 0 && (
               <div className="total-bar">
                 <span>{selectedRepairs.length} reparatie{selectedRepairs.length > 1 ? "s" : ""} geselecteerd</span>
-                <strong>Totaal: {fmtPrice(totalWithFee)}{hasOverige ? " + op aanvraag" : ""} <span style={{ fontWeight: 500, fontSize: 12, opacity: 0.8 }}>incl. onderdelen, arbeid en voorrijkosten</span></strong>
+                <span style={{ textAlign: "right" }}>
+                  <strong>Totaal: {fmtPrice(totalWithFee)}{hasOverige ? " + op aanvraag" : ""}</strong>
+                  <span style={{ display: "block", fontWeight: 800, fontSize: 13, marginTop: 3 }}>
+                    incl. onderdelen, arbeid en voorrijkosten
+                  </span>
+                </span>
               </div>
             )}
 
@@ -577,8 +582,11 @@ export default function BookingPage() {
                 <span>{fmtPrice(VOORRIJKOSTEN)}</span>
               </div>
               <div className="line total">
-                <span>Totaal <span style={{ fontWeight: 500, fontSize: 11, color: "var(--muted)" }}>incl. onderdelen, arbeid en voorrijkosten</span></span>
+                <span>Totaal</span>
                 <span>{fmtPrice(totalWithFee)}{hasOverige ? " + op aanvraag" : ""}</span>
+              </div>
+              <div style={{ fontWeight: 800, fontSize: 13, color: "var(--dark)", marginTop: 6, textAlign: "right" }}>
+                incl. onderdelen, arbeid en voorrijkosten
               </div>
             </div>
             <label className="field">
