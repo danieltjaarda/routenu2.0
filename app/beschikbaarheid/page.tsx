@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Driver, Availability } from "@/lib/types";
 import { PROVINCES } from "@/lib/types";
+import NLMap from "@/components/NLMap";
 
 function toDateStr(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -143,24 +144,27 @@ export default function AvailabilityPage() {
 
       <div className="default-provs">
         <div className="dp-label">
-          Standaard provincies voor nieuwe dagen
+          Selecteer op de kaart de provincies voor nieuwe dagen
           <span className="dp-actions">
             <button type="button" onClick={() => setDefaultProvinces([...PROVINCES])}>alles</button>
             <button type="button" onClick={() => setDefaultProvinces([])}>niets</button>
           </span>
         </div>
-        <div className="pchips">
-          {PROVINCES.map((p) => (
-            <button
-              key={p}
-              type="button"
-              className={`pchip ${defaultProvinces.includes(p) ? "on" : ""}`}
-              onClick={() => toggleDefaultProvince(p)}
-              title={p}
-            >
-              {p}
-            </button>
-          ))}
+        <div className="dp-body">
+          <NLMap selected={defaultProvinces} onToggle={toggleDefaultProvince} />
+          <div className="pchips dp-side">
+            {PROVINCES.map((p) => (
+              <button
+                key={p}
+                type="button"
+                className={`pchip ${defaultProvinces.includes(p) ? "on" : ""}`}
+                onClick={() => toggleDefaultProvince(p)}
+                title={p}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

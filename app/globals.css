@@ -455,6 +455,31 @@ table.data tr:hover td { background: var(--bg); }
   padding: 0;
   text-decoration: underline;
 }
+.default-provs .dp-body {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.default-provs .dp-side { max-width: 260px; align-content: flex-start; }
+
+/* klikbare Nederland-kaart */
+.nl-map {
+  width: 300px;
+  max-width: 100%;
+  height: auto;
+  flex-shrink: 0;
+}
+.nl-prov {
+  fill: #eef2f5;
+  stroke: #fff;
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition: fill 0.15s ease;
+}
+.nl-prov:hover { fill: #d6e9f7; }
+.nl-prov.on { fill: var(--primary); }
+.nl-prov.on:hover { fill: #1ba2bb; }
 
 /* ---------- boekingswizard ---------- */
 .steps { display: flex; gap: 6px; flex-wrap: wrap; }
