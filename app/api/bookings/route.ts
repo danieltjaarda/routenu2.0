@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRoutes, upsertRoute, getDrivers, getAvailability } from "@/lib/data";
-import { sendStopNotifications } from "@/lib/notifications";
+import { sendStopNotifications, formatDateNl } from "@/lib/notifications";
 import { calcDrivingMinutes, MAX_ROUTE_MINUTES } from "@/lib/routing";
+import { sendWebhook } from "@/lib/webhook";
 import type { Route, Stop } from "@/lib/types";
+
+const ADMIN_EMAIL = "daniel@deskna.nl";
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +29,11 @@ export async function POST(req: NextRequest) {
   }
   if (!email && !phone) {
     return NextResponse.json({ error: "Vul een e-mailadres of telefoonnummer in" }, { status: 400 });
+  }
+
+  // vandaag of eerder kan nooit geboekt worden
+  if (date <= todayStr()) {
+    return NextResponse.json({ error: "Deze datum is niet meer beschikbaar" }, { status: 409 });
   }
 
   // datum moet door de planner als beschikbaar zijn gemarkeerd
@@ -96,6 +109,23 @@ export async function POST(req: NextRequest) {
   const drivers = await getDrivers();
   const driverName = drivers.find((d) => d.id === route.driverId)?.name ?? "onze chauffeur";
   const notify = await sendStopNotifications(route, [stop], "stop_added", driverName);
+
+  // beheerdersmelding: nieuwe aanmelding binnengekomen
+  await sendWebhook({
+    type: "email",
+    source: "routenu",
+    email_to: ADMIN_EMAIL,
+    email_subject: "Reparatie aangemeld — kijk nu op RouteNu",
+    email_body:
+      `<p>Er is zojuist een nieuwe reparatie aangemeld via de boekingspagina.</p>` +
+      `<p><strong>Klant:</strong> ${customerName}<br/>` +
+      `<strong>Adres:</strong> ${address}<br/>` +
+      `<strong>Datum:</strong> ${formatDateNl(date)} tussen 17:00 - 18:00<br/>` +
+      `<strong>Fiets:</strong> ${brand}${model ? ` ${model}` : ""}<br/>` +
+      `<strong>Reparaties:</strong> ${repairNames}<br/>` +
+      `<strong>Totaal:</strong> € ${total.toFixed(2).replace(".", ",")} (incl. voorrijkosten)</p>` +
+      `<p>Kijk nu op RouteNu voor de route van die dag.</p>`,
+  });
 
   return NextResponse.json({ ok: true, routeId: route.id, stopId: stop.id, notify }, { status: 201 });
 }

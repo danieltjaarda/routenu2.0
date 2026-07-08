@@ -13,8 +13,9 @@ function todayStr() {
 export async function GET(req: NextRequest) {
   let items = await getAvailability();
   if (req.nextUrl.searchParams.get("future")) {
+    // vandaag zelf is nooit boekbaar voor klanten
     const today = todayStr();
-    items = items.filter((a) => a.date >= today);
+    items = items.filter((a) => a.date > today);
     // datums verbergen waarvan de route de maximale reistijd al heeft bereikt
     const routes = await getRoutes();
     const fullDates = new Set(
