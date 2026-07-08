@@ -65,6 +65,7 @@ a { color: inherit; text-decoration: none; }
   font-weight: 600;
   color: var(--muted);
 }
+.customer-logo { height: 30px; width: auto; display: block; }
 
 main { min-height: calc(100vh - 56px); }
 

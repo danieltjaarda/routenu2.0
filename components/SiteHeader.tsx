@@ -10,9 +10,8 @@ export default function SiteHeader() {
   if (pathname?.startsWith("/boeken")) {
     return (
       <header className="topbar customer-theme">
-        <span className="logo">
-          R<span className="logo-o">o</span>ute<span className="logo-nu">nu</span>
-        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/fatbikehulp-logo.avif" alt="Fatbikehulp" className="customer-logo" />
         <span className="customer-tag">Fatbike reparatie aan huis</span>
       </header>
     );
