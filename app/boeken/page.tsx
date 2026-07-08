@@ -326,6 +326,8 @@ export default function BookingPage() {
 
             <p style={{ fontSize: 13, color: "var(--muted)" }}>
               Of selecteer zelf één of meerdere reparaties. Staat jouw reparatie er niet tussen? Kies dan &lsquo;Overige&rsquo;.
+              <br />
+              <strong>Alle prijzen zijn inclusief onderdelen.</strong>
             </p>
             <div className="repair-grid">
               {sortedServices.map((s) => {
@@ -364,7 +366,7 @@ export default function BookingPage() {
             {selectedRepairs.length > 0 && (
               <div className="total-bar">
                 <span>{selectedRepairs.length} reparatie{selectedRepairs.length > 1 ? "s" : ""} geselecteerd</span>
-                <strong>Totaal: {fmtPrice(total)}{hasOverige ? " + op aanvraag" : ""}</strong>
+                <strong>Totaal: {fmtPrice(total)}{hasOverige ? " + op aanvraag" : ""} <span style={{ fontWeight: 500, fontSize: 12, opacity: 0.8 }}>incl. onderdelen</span></strong>
               </div>
             )}
 
