@@ -1,19 +1,43 @@
 [
  {
+  "name": "Binnenband voor vervangen",
+  "slug": "binnenband-voor-vervangen",
+  "price": 39.0,
+  "sub": "Lekke band",
+  "image": "/parts/binnenband-voor-vervangen.png",
+  "desc": "Vervangen van de binnenband van een fatbike-wiel. Inclusief verwijderen van het wiel, demonteren van de band, plaatsen van een nieuwe binnenband en weer monteren. Controle op lekkage en juiste bandens"
+ },
+ {
+  "name": "Binnenband achter vervangen",
+  "slug": "binnenband-achter-vervangen",
+  "price": 49.0,
+  "sub": "Lekke band",
+  "image": "/parts/binnenband-achter-vervangen.png",
+  "desc": "Vervangen van de achterste binnenband van een fatbike. Inclusief demontage van het wiel, vervangen van de binnenband en herplaatsen van het wiel. Bandenspanning wordt gecontroleerd en juist afgesteld."
+ },
+ {
+  "name": "Buitenband voor vervangen",
+  "slug": "buitenband-voor-vervangen",
+  "price": 59.0,
+  "sub": "Kenda buitenband",
+  "image": "/parts/buitenband-voor-vervangen.jpg",
+  "desc": "Vervangen van de buitenband van een fatbike. Inclusief demontage van het wiel, verwijderen van oude band, plaatsen van nieuwe buitenband en herinstallatie. Controle op bandenspanning en juiste montage"
+ },
+ {
+  "name": "Buitenband achter vervangen",
+  "slug": "buitenband-achter-vervangen",
+  "price": 79.0,
+  "sub": "Kenda buitenband",
+  "image": "/parts/buitenband-achter-vervangen.jpg",
+  "desc": "Vervangen van de achterste buitenband van een fatbike. Inclusief demontage van het achterwiel, verwijderen van de oude band, montage van de nieuwe buitenband en herplaatsen van het wiel. Controle op j"
+ },
+ {
   "name": "Remblokken vervangen",
   "slug": "remblokken-vervangen",
   "price": 25.0,
   "sub": "Remblokjes met extra remkracht",
   "image": "/parts/remblokken-vervangen.png",
   "desc": "Vervangen van remblokken per wiel. Inclusief demontage van de oude blokken, reinigen van de remklauw, plaatsen van nieuwe blokken en controle op correcte werking van het remsysteem."
- },
- {
-  "name": "Binnenband voor vervangen",
-  "slug": "binnenband-voor-vervangen",
-  "price": 39.0,
-  "sub": "Deli binnenband",
-  "image": "/parts/binnenband-voor-vervangen.png",
-  "desc": "Vervangen van de binnenband van een fatbike-wiel. Inclusief verwijderen van het wiel, demonteren van de band, plaatsen van een nieuwe binnenband en weer monteren. Controle op lekkage en juiste bandens"
  },
  {
   "name": "Remschijf vervangen",
@@ -32,14 +56,6 @@
   "desc": "Vervangen van de fatbike ketting. Inclusief verwijderen van de oude ketting, plaatsen en afstellen van een nieuwe ketting, en smeren voor optimale werking. Controle op aandrijflijn inbegrepen."
  },
  {
-  "name": "Binnenband achter vervangen",
-  "slug": "binnenband-achter-vervangen",
-  "price": 49.0,
-  "sub": "Deli binnenband",
-  "image": "/parts/binnenband-achter-vervangen.png",
-  "desc": "Vervangen van de achterste binnenband van een fatbike. Inclusief demontage van het wiel, vervangen van de binnenband en herplaatsen van het wiel. Bandenspanning wordt gecontroleerd en juist afgesteld."
- },
- {
   "name": "Cassette vervangen",
   "slug": "cassette-vervangen",
   "price": 59.0,
@@ -56,14 +72,6 @@
   "desc": "Verversen van remolie en ontluchten van het hydraulisch remsysteem per wiel. Inclusief verwijderen van oude olie, bijvullen met verse olie en ontluchten voor optimale remkracht en respons."
  },
  {
-  "name": "Buitenband voor vervangen",
-  "slug": "buitenband-voor-vervangen",
-  "price": 59.0,
-  "sub": "Kenda buitenband",
-  "image": "/parts/buitenband-voor-vervangen.jpg",
-  "desc": "Vervangen van de buitenband van een fatbike. Inclusief demontage van het wiel, verwijderen van oude band, plaatsen van nieuwe buitenband en herinstallatie. Controle op bandenspanning en juiste montage"
- },
- {
   "name": "Hydraulische rem set voor",
   "slug": "hydraulische-rem-set-voor",
   "price": 75.0,
@@ -78,14 +86,6 @@
   "sub": "Zoom of Logan",
   "image": "/parts/hydraulische-rem-set-achter.png",
   "desc": "Demonteren van de oude rem, plaatsen van een nieuwe set achter, vullen/ontluchten en afstellen. Inclusief controle op remkracht en veiligheid."
- },
- {
-  "name": "Buitenband achter vervangen",
-  "slug": "buitenband-achter-vervangen",
-  "price": 79.0,
-  "sub": "Kenda buitenband",
-  "image": "/parts/buitenband-achter-vervangen.jpg",
-  "desc": "Vervangen van de achterste buitenband van een fatbike. Inclusief demontage van het achterwiel, verwijderen van de oude band, montage van de nieuwe buitenband en herplaatsen van het wiel. Controle op j"
  },
  {
   "name": "Derailleur vervangen",

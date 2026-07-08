@@ -32,6 +32,10 @@ export default function BookingPage() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
 
+  const [aiText, setAiText] = useState("");
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiUitleg, setAiUitleg] = useState("");
+
   useEffect(() => {
     fetch("/api/availability?future=1").then((r) => r.json()).then(setAvailability);
     fetch("/api/services").then((r) => r.json()).then(setServices);
@@ -79,6 +83,34 @@ export default function BookingPage() {
     setSelectedRepairs((prev) =>
       prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]
     );
+  }
+
+  async function aiSelect() {
+    if (!aiText.trim() || aiBusy) return;
+    setAiBusy(true);
+    setAiUitleg("");
+    setError("");
+    try {
+      const res = await fetch("/api/ai-select", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: aiText }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "AI kon geen keuze maken. Selecteer handmatig.");
+        return;
+      }
+      if (data.repairs.length === 0) {
+        setAiUitleg("Geen passende reparatie gevonden — selecteer hieronder handmatig of kies 'Overige'.");
+        return;
+      }
+      setSelectedRepairs(data.repairs);
+      setDescription(aiText.trim());
+      setAiUitleg(data.uitleg || "Reparaties geselecteerd op basis van je omschrijving.");
+    } finally {
+      setAiBusy(false);
+    }
   }
 
   async function submit() {
@@ -241,8 +273,30 @@ export default function BookingPage() {
         {step === 2 && (
           <>
             <h3 style={{ marginTop: 0 }}>Vertel ons wat er kapot is</h3>
-            <p style={{ fontSize: 13, color: "var(--muted)", marginTop: -8 }}>
-              Selecteer één of meerdere reparaties. Staat jouw reparatie er niet tussen? Kies dan &lsquo;Overige&rsquo;.
+
+            <div className="ai-bar">
+              <div className="ai-head">✨ Omschrijf je probleem, dan selecteren wij de juiste reparaties</div>
+              <div className="ai-row">
+                <input
+                  placeholder="Bijv. mijn achterband is lek en mijn display doet het niet meer..."
+                  value={aiText}
+                  onChange={(e) => setAiText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      aiSelect();
+                    }
+                  }}
+                />
+                <button type="button" className="btn small" onClick={aiSelect} disabled={aiBusy || !aiText.trim()}>
+                  {aiBusy ? "Denken..." : "Selecteer"}
+                </button>
+              </div>
+              {aiUitleg && <div className="ai-uitleg">💡 {aiUitleg}</div>}
+            </div>
+
+            <p style={{ fontSize: 13, color: "var(--muted)" }}>
+              Of selecteer zelf één of meerdere reparaties. Staat jouw reparatie er niet tussen? Kies dan &lsquo;Overige&rsquo;.
             </p>
             <div className="repair-grid">
               {services.map((s) => {

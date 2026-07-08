@@ -506,6 +506,18 @@ table.data tr:hover td { background: var(--bg); }
 }
 .repair-card .check.on { background: var(--primary); border-color: var(--primary); color: #fff; }
 
+.ai-bar {
+  border: 1px solid #cdeef7;
+  background: linear-gradient(135deg, #f0fbfe, #eaf7ff);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.ai-bar .ai-head { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 10px; }
+.ai-bar .ai-row { display: flex; gap: 8px; }
+.ai-bar .ai-row input { flex: 1; background: #fff; }
+.ai-bar .ai-uitleg { font-size: 13px; color: #1a7a94; margin-top: 10px; }
+
 .total-bar {
   display: flex;
   justify-content: space-between;
