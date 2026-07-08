@@ -8,6 +8,9 @@ import { PROVINCES, regionForLocation } from "@/lib/types";
 
 const STEPS = ["Merk", "Model", "Reparatie", "Datum", "Gegevens"] as const;
 
+/** Vaste voorrijkosten per boeking (EUR) */
+const VOORRIJKOSTEN = 60;
+
 function fmtPrice(n: number) {
   return n % 1 === 0 ? `€ ${n.toFixed(0)},-` : `€ ${n.toFixed(2).replace(".", ",")}`;
 }
@@ -133,6 +136,7 @@ export default function BookingPage() {
     () => chosenServices.reduce((sum, s) => sum + (s.price || 0), 0),
     [chosenServices]
   );
+  const totalWithFee = total + VOORRIJKOSTEN;
   const hasOverige = selectedRepairs.includes("overige");
 
   function fmtDate(d: string) {
@@ -250,7 +254,7 @@ export default function BookingPage() {
           <h1 style={{ marginTop: 12 }}>Aanmelding gelukt!</h1>
           <p style={{ color: "var(--muted)" }}>
             Uw reparatie is ingepland op <strong>{fmtDate(date)}</strong>.
-            {total > 0 && <> Verwachte kosten: <strong>{fmtPrice(total)}</strong>{hasOverige ? " (excl. overige reparatie)" : ""}.</>}
+            {total > 0 && <> Verwachte kosten: <strong>{fmtPrice(totalWithFee)}</strong> incl. onderdelen, arbeid en voorrijkosten{hasOverige ? " (excl. overige reparatie)" : ""}.</>}
             <br />
             U ontvangt een bevestiging{email && phone ? " per e-mail en WhatsApp" : email ? " per e-mail" : " per WhatsApp"} met later ook het verwachte tijdvak.
           </p>
@@ -454,7 +458,7 @@ export default function BookingPage() {
             {selectedRepairs.length > 0 && (
               <div className="total-bar">
                 <span>{selectedRepairs.length} reparatie{selectedRepairs.length > 1 ? "s" : ""} geselecteerd</span>
-                <strong>Totaal: {fmtPrice(total)}{hasOverige ? " + op aanvraag" : ""} <span style={{ fontWeight: 500, fontSize: 12, opacity: 0.8 }}>incl. onderdelen</span></strong>
+                <strong>Totaal: {fmtPrice(totalWithFee)}{hasOverige ? " + op aanvraag" : ""} <span style={{ fontWeight: 500, fontSize: 12, opacity: 0.8 }}>incl. onderdelen, arbeid en voorrijkosten</span></strong>
               </div>
             )}
 
@@ -570,9 +574,13 @@ export default function BookingPage() {
                   <span>{s.price > 0 ? fmtPrice(s.price) : "op aanvraag"}</span>
                 </div>
               ))}
+              <div className="line">
+                <span>Voorrijkosten</span>
+                <span>{fmtPrice(VOORRIJKOSTEN)}</span>
+              </div>
               <div className="line total">
-                <span>Totaal</span>
-                <span>{fmtPrice(total)}{hasOverige ? " + op aanvraag" : ""}</span>
+                <span>Totaal <span style={{ fontWeight: 500, fontSize: 11, color: "var(--muted)" }}>incl. onderdelen, arbeid en voorrijkosten</span></span>
+                <span>{fmtPrice(totalWithFee)}{hasOverige ? " + op aanvraag" : ""}</span>
               </div>
             </div>
             <label className="field">

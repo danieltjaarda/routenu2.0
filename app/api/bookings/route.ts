@@ -30,7 +30,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Deze datum is niet beschikbaar" }, { status: 409 });
   }
 
-  const total = repairs.reduce((sum, r) => sum + (r.price || 0), 0);
+  // reparaties + vaste voorrijkosten
+  const VOORRIJKOSTEN = 60;
+  const total = repairs.reduce((sum, r) => sum + (r.price || 0), 0) + VOORRIJKOSTEN;
   const repairNames = repairs.map((r) => r.name).join(", ");
   const notes = [`${brand}${model ? ` ${model}` : ""}`, repairNames, description]
     .filter(Boolean)
@@ -46,7 +48,7 @@ export async function POST(req: NextRequest) {
     lat,
     type: "bezorgen",
     notes,
-    amountDue: total > 0 ? total : undefined,
+    amountDue: total,
     serviceMinutes: Math.max(30, repairs.length * 20),
     status: "open",
   };
