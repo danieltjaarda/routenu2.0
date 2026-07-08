@@ -518,6 +518,49 @@ table.data tr:hover td { background: var(--bg); }
 .ai-bar .ai-row input { flex: 1; background: #fff; }
 .ai-bar .ai-uitleg { font-size: 13px; color: #1a7a94; margin-top: 10px; }
 
+.ai-btn-busy { display: inline-flex; align-items: center; gap: 8px; }
+.ai-spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  animation: ai-spin 0.7s linear infinite;
+}
+@keyframes ai-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ai-thinking { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.ai-dots { display: inline-flex; gap: 5px; }
+.ai-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22b8d4;
+  animation: ai-bounce 1.2s ease-in-out infinite;
+}
+.ai-dots span:nth-child(2) { animation-delay: 0.15s; }
+.ai-dots span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes ai-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
+.ai-thinking-text {
+  font-size: 13px;
+  font-weight: 600;
+  background: linear-gradient(90deg, #1a7a94 25%, #6fd6ec 50%, #1a7a94 75%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: ai-shimmer 1.8s linear infinite;
+}
+@keyframes ai-shimmer {
+  to { background-position: -200% 0; }
+}
+
 .total-bar {
   display: flex;
   justify-content: space-between;

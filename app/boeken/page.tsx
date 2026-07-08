@@ -289,10 +289,27 @@ export default function BookingPage() {
                   }}
                 />
                 <button type="button" className="btn small" onClick={aiSelect} disabled={aiBusy || !aiText.trim()}>
-                  {aiBusy ? "Denken..." : "Selecteer"}
+                  {aiBusy ? (
+                    <span className="ai-btn-busy">
+                      <span className="ai-spinner" />
+                      Denken
+                    </span>
+                  ) : (
+                    "Selecteer"
+                  )}
                 </button>
               </div>
-              {aiUitleg && <div className="ai-uitleg">💡 {aiUitleg}</div>}
+              {aiBusy && (
+                <div className="ai-thinking">
+                  <span className="ai-dots">
+                    <span />
+                    <span />
+                    <span />
+                  </span>
+                  <span className="ai-thinking-text">AI analyseert je omschrijving...</span>
+                </div>
+              )}
+              {!aiBusy && aiUitleg && <div className="ai-uitleg">💡 {aiUitleg}</div>}
             </div>
 
             <p style={{ fontSize: 13, color: "var(--muted)" }}>
