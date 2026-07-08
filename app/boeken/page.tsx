@@ -289,7 +289,7 @@ export default function BookingPage() {
     <div className="page" style={{ maxWidth: 720 }}>
       <h1>Reparatie aan huis</h1>
 
-      <div className={step === 2 ? "step-bare" : "card"} style={{ marginTop: 18, overflow: "hidden" }}>
+      <div className={step === 2 || step === 4 ? "step-bare" : "card"} style={{ marginTop: 18, overflow: "hidden" }}>
         <div key={step} className={`step-pane ${slideDir}`}>
         {step === 0 && (
           <>

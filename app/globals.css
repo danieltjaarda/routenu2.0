@@ -790,7 +790,7 @@ table.data tr:hover td { background: var(--bg); }
   border-radius: 10px;
   padding: 14px 16px;
   margin-bottom: 16px;
-  background: #f8fbfd;
+  background: #fff;
   font-size: 13px;
 }
 .summary-box .line { display: flex; justify-content: space-between; margin-top: 6px; color: var(--muted); }
