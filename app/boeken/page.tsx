@@ -286,15 +286,6 @@ export default function BookingPage() {
       <h1>Reparatie aanmelden</h1>
       <p className="subtitle">Meld uw fatbike aan voor reparatie aan huis, in een paar stappen.</p>
 
-      <div className="steps">
-        {STEPS.map((label, i) => (
-          <div key={label} className={`step ${i === step ? "active" : ""} ${i < step ? "done" : ""}`}>
-            <span className="n">{i < step ? "✓" : i + 1}</span>
-            <span className="l">{label}</span>
-          </div>
-        ))}
-      </div>
-
       <div className={step === 2 ? "step-bare" : "card"} style={{ marginTop: 18, overflow: "hidden" }}>
         <div key={step} className={`step-pane ${slideDir}`}>
         {step === 0 && (
