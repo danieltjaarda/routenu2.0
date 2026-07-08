@@ -1,0 +1,290 @@
+[
+ {
+  "name": "Remblokken vervangen",
+  "slug": "remblokken-vervangen",
+  "price": 25.0,
+  "sub": "Remblokjes met extra remkracht",
+  "image": "/parts/remblokken-vervangen.png",
+  "desc": "Vervangen van remblokken per wiel. Inclusief demontage van de oude blokken, reinigen van de remklauw, plaatsen van nieuwe blokken en controle op correcte werking van het remsysteem."
+ },
+ {
+  "name": "Binnenband voor vervangen",
+  "slug": "binnenband-voor-vervangen",
+  "price": 39.0,
+  "sub": "Deli binnenband",
+  "image": "/parts/binnenband-voor-vervangen.png",
+  "desc": "Vervangen van de binnenband van een fatbike-wiel. Inclusief verwijderen van het wiel, demonteren van de band, plaatsen van een nieuwe binnenband en weer monteren. Controle op lekkage en juiste bandens"
+ },
+ {
+  "name": "Remschijf vervangen",
+  "slug": "remschijf-vervangen",
+  "price": 49.0,
+  "sub": "Remschijf 160mm",
+  "image": "/parts/remschijf-vervangen.jpg",
+  "desc": "Vervangen van de remschijf. Inclusief demontage van het wiel, verwijderen van de oude schijf, montage van een nieuwe remschijf en juiste bevestiging. Controle op uitlijning en werking van het remsyste"
+ },
+ {
+  "name": "Ketting vervangen",
+  "slug": "ketting-vervangen",
+  "price": 49.0,
+  "sub": "Ketting roestvrij staal",
+  "image": "/parts/ketting-vervangen.webp",
+  "desc": "Vervangen van de fatbike ketting. Inclusief verwijderen van de oude ketting, plaatsen en afstellen van een nieuwe ketting, en smeren voor optimale werking. Controle op aandrijflijn inbegrepen."
+ },
+ {
+  "name": "Binnenband achter vervangen",
+  "slug": "binnenband-achter-vervangen",
+  "price": 49.0,
+  "sub": "Deli binnenband",
+  "image": "/parts/binnenband-achter-vervangen.png",
+  "desc": "Vervangen van de achterste binnenband van een fatbike. Inclusief demontage van het wiel, vervangen van de binnenband en herplaatsen van het wiel. Bandenspanning wordt gecontroleerd en juist afgesteld."
+ },
+ {
+  "name": "Cassette vervangen",
+  "slug": "cassette-vervangen",
+  "price": 59.0,
+  "sub": "Cassettte roestvrij staal",
+  "image": "/parts/cassette-vervangen.png",
+  "desc": "Vervangen van de cassette op het achterwiel. Inclusief demontage van het wiel, verwijderen van de oude cassette, montage van de nieuwe cassette en controle op aandrijflijn en kettingcompatibiliteit."
+ },
+ {
+  "name": "Remolie + ontluchten",
+  "slug": "remolie-ontluchten",
+  "price": 25.0,
+  "sub": "Shimano mineral olie",
+  "image": "/parts/remolie-ontluchten.jpg",
+  "desc": "Verversen van remolie en ontluchten van het hydraulisch remsysteem per wiel. Inclusief verwijderen van oude olie, bijvullen met verse olie en ontluchten voor optimale remkracht en respons."
+ },
+ {
+  "name": "Buitenband voor vervangen",
+  "slug": "buitenband-voor-vervangen",
+  "price": 59.0,
+  "sub": "Kenda buitenband",
+  "image": "/parts/buitenband-voor-vervangen.jpg",
+  "desc": "Vervangen van de buitenband van een fatbike. Inclusief demontage van het wiel, verwijderen van oude band, plaatsen van nieuwe buitenband en herinstallatie. Controle op bandenspanning en juiste montage"
+ },
+ {
+  "name": "Hydraulische rem set voor",
+  "slug": "hydraulische-rem-set-voor",
+  "price": 75.0,
+  "sub": "Zoom of Logan",
+  "image": "/parts/hydraulische-rem-set-voor.png",
+  "desc": "Demonteren van de oude rem, plaatsen van een nieuwe set voor, vullen/ontluchten en afstellen. Inclusief controle op remkracht en veiligheid."
+ },
+ {
+  "name": "Hydraulische rem set achter",
+  "slug": "hydraulische-rem-set-achter",
+  "price": 100.0,
+  "sub": "Zoom of Logan",
+  "image": "/parts/hydraulische-rem-set-achter.png",
+  "desc": "Demonteren van de oude rem, plaatsen van een nieuwe set achter, vullen/ontluchten en afstellen. Inclusief controle op remkracht en veiligheid."
+ },
+ {
+  "name": "Buitenband achter vervangen",
+  "slug": "buitenband-achter-vervangen",
+  "price": 79.0,
+  "sub": "Kenda buitenband",
+  "image": "/parts/buitenband-achter-vervangen.jpg",
+  "desc": "Vervangen van de achterste buitenband van een fatbike. Inclusief demontage van het achterwiel, verwijderen van de oude band, montage van de nieuwe buitenband en herplaatsen van het wiel. Controle op j"
+ },
+ {
+  "name": "Derailleur vervangen",
+  "slug": "derailleur-vervangen",
+  "price": 79.0,
+  "sub": "Shimano derailleur",
+  "image": "/parts/derailleur-vervangen.png",
+  "desc": "Verwijderen van de oude derailleur, montage en afstelling van de nieuwe. Inclusief controle op soepel schakelen."
+ },
+ {
+  "name": "Koplamp vervangen",
+  "slug": "koplamp-vervangen",
+  "price": 49.0,
+  "sub": "Origineel koplamp",
+  "image": "/parts/koplamp-vervangen.jpg",
+  "desc": "Verwijderen van de oude koplamp en montage van een nieuwe. Inclusief controle op werking en juiste afstelling."
+ },
+ {
+  "name": "Achterlicht vervangen",
+  "slug": "achterlicht-vervangen",
+  "price": 39.0,
+  "sub": "Origineel achterlicht",
+  "image": "/parts/achterlicht-vervangen.png",
+  "desc": "Verwijderen van het oude achterlicht en montage van een nieuw exemplaar. Inclusief controle op werking en zichtbaarheid."
+ },
+ {
+  "name": "Display vervangen",
+  "slug": "display-vervangen",
+  "price": 99.0,
+  "sub": "Origineel scherm",
+  "image": "/parts/display-vervangen.png",
+  "desc": "Verwijderen van het oude display en montage van een nieuw exemplaar. Inclusief controle op werking en aansluiting."
+ },
+ {
+  "name": "Trappers vervangen",
+  "slug": "trappers-vervangen",
+  "price": 29.0,
+  "sub": "Origineel links + rechts",
+  "image": "/parts/trappers-vervangen.png",
+  "desc": "Verwijderen van de oude trappers en montage van nieuwe. Inclusief controle op stevige bevestiging en soepelheid."
+ },
+ {
+  "name": "Crankset vervangen",
+  "slug": "crankset-vervangen",
+  "price": 59.0,
+  "sub": "Crankset origineel",
+  "image": "/parts/crankset-vervangen.png",
+  "desc": "Verwijderen van de oude crankset en montage van een nieuwe. Inclusief controle op correcte passing en soepel trappen."
+ },
+ {
+  "name": "Voetsteuntjes vervangen",
+  "slug": "voetsteuntjes-vervangen",
+  "price": 39.0,
+  "sub": "Origineel links + rechts",
+  "image": "/parts/voetsteuntjes-vervangen.jpg",
+  "desc": "Verwijderen van de oude voetsteuntjes en montage van nieuwe. Inclusief controle op stevige bevestiging en veiligheid."
+ },
+ {
+  "name": "Voorvork vervangen",
+  "slug": "voorvork-vervangen",
+  "price": 195.0,
+  "sub": "Origineel voorvork",
+  "image": "/parts/voorvork-vervangen.png",
+  "desc": "Verwijderen van de defecte of versleten voorvork en montage van een nieuwe. Inclusief nauwkeurige uitlijning en controle van de demping en werking."
+ },
+ {
+  "name": "Trapsensor vervangen",
+  "slug": "trapsensor-vervangen",
+  "price": 59.0,
+  "sub": "Origineel trapsensor",
+  "image": "/parts/trapsensor-vervangen.png",
+  "desc": ""
+ },
+ {
+  "name": "Motor vervangen",
+  "slug": "motor-vervangen",
+  "price": 395.0,
+  "sub": "Origineel 250w of 500w",
+  "image": "/parts/motor-vervangen.png",
+  "desc": "Verwijderen van de defecte of versleten motor en montage van een nieuwe. Inclusief controle van elektrische aansluiting, werking en veiligheid."
+ },
+ {
+  "name": "Shifter vervangen",
+  "slug": "shifter-vervangen",
+  "price": 79.0,
+  "sub": "Shimano 7 speed",
+  "image": "/parts/shifter-vervangen.png",
+  "desc": "Verwijderen van de versleten of defecte shifter en montage van een nieuwe. Inclusief afstelling en controle op nauwkeurig schakelen."
+ },
+ {
+  "name": "Onderhoudsbeurt",
+  "slug": "onderhoudsbeurt",
+  "price": 69.0,
+  "sub": "Algemene onderhoudsbeurt",
+  "image": "/parts/onderhoudsbeurt.png",
+  "desc": "Bij onze service controleren wij de slijtage en staat van alle belangrijke onderdelen van je fiets, zoals remmen, zadel, motor, lampen, veringen, kabels, kettingwielen, accu en pedalen. Ook verzorgen "
+ },
+ {
+  "name": "Alarm inbouwen",
+  "slug": "alarm-inbouwen",
+  "price": 49.0,
+  "sub": "Fatbike alarm",
+  "image": "/parts/alarm-inbouwen.jpeg",
+  "desc": "Inclusief bepalen van de juiste montageplek, monteren van het alarmsysteem, aansluiten van batterijen. Controle op correcte werking van sirene en sensoren. Inclusief inbegrepen afstandsbediening."
+ },
+ {
+  "name": "GPS Airtag inbouwen",
+  "slug": "gps-airtag-inbouwen",
+  "price": 49.0,
+  "sub": "Eigen merk",
+  "image": "/parts/gps-airtag-inbouwen.png",
+  "desc": "Met de GPS airtag kun je jouw fatbike, elektrische fiets of scooter eenvoudig traceren. Dit compacte en slimme apparaat biedt gemoedsrust door je voertuig altijd en overal te lokaliseren via je iOS-ap"
+ },
+ {
+  "name": "Voorwiel vervangen",
+  "slug": "voorwiel-vervangen",
+  "price": 95.0,
+  "sub": "Origineel voorwiel",
+  "image": "/parts/voorwiel-vervangen.png",
+  "desc": "Inclusief demontage van het voorwiel, vervangen van de binnenband en herplaatsen van het wiel. Bandenspanning wordt gecontroleerd en juist afgesteld."
+ },
+ {
+  "name": "Tandwielen motor vervangen",
+  "slug": "tandwielen-motor-vervangen",
+  "price": 159.0,
+  "sub": "Origineel tandwielen",
+  "image": "/parts/tandwielen-motor-vervangen.jpg",
+  "desc": "Inclusief demontage van de motorbehuizing, verwijderen van de versleten tandwielen, plaatsen van nieuwe tandwielen en correct afstellen. Motor wordt opnieuw gemonteerd en getest op juiste werking en g"
+ },
+ {
+  "name": "Accuslot vervangen",
+  "slug": "accuslot-vervangen",
+  "price": 75.0,
+  "sub": "Origineel accu slot",
+  "image": "/parts/accuslot-vervangen.png",
+  "desc": "Inclusief demonteren van het oude slot, plaatsen en aansluiten van het nieuwe slot en controleren op correcte werking."
+ },
+ {
+  "name": "Accu dock vervangen",
+  "slug": "accu-dock-vervangen",
+  "price": 89.0,
+  "sub": "Origineel accu dock",
+  "image": "/parts/accu-dock-vervangen.png",
+  "desc": "Inclusief demonteren van het oude dock, plaatsen en aansluiten van het nieuwe dock en testen van de accupasvorm en elektrische verbinding."
+ },
+ {
+  "name": "Kabelboom vervangen",
+  "slug": "kabelboom-vervangen",
+  "price": 119.0,
+  "sub": "Origineel kabelboom",
+  "image": "/parts/kabelboom-vervangen.jpg",
+  "desc": "Inclusief demonteren van de oude kabelboom, zorgvuldig plaatsen en aansluiten van de nieuwe kabelboom en controleren van alle elektrische functies op correcte werking."
+ },
+ {
+  "name": "Controller vervangen",
+  "slug": "controller-vervangen",
+  "price": 119.0,
+  "sub": "Origineel controller",
+  "image": "/parts/controller-vervangen.png",
+  "desc": "Inclusief loskoppelen en verwijderen van de oude controller, plaatsen en aansluiten van de nieuwe controller en testen van alle functies voor correcte werking."
+ },
+ {
+  "name": "Verlichting schakelaar vervangen",
+  "slug": "verlichting-schakelaar-vervangen",
+  "price": 29.0,
+  "sub": "Origineel schakelaar (verlichting, claxon en knipperlicht)",
+  "image": "/parts/verlichting-schakelaar-vervangen.jpg",
+  "desc": "Inclusief demonteren van de defecte schakelaar, monteren en aansluiten van de nieuwe schakelaar en controleren van de juiste werking van de verlichting."
+ },
+ {
+  "name": "Zijstandaard vervangen",
+  "slug": "zijstandaard-vervangen",
+  "price": 29.0,
+  "sub": "Origineel standaard",
+  "image": "/parts/zijstandaard-vervangen.jpeg",
+  "desc": "Inclusief demonteren van de oude standaard, monteren van de nieuwe zijstandaard en controleren op correcte werking en stabiliteit van de fiets."
+ },
+ {
+  "name": "Traparm vervangen",
+  "slug": "traparm-vervangen",
+  "price": 39.0,
+  "sub": "Origineel traparm",
+  "image": "/parts/traparm-vervangen.jpg",
+  "desc": "Inclusief demonteren van de beschadigde of versleten traparm, monteren van de nieuwe traparm en controleren op juiste bevestiging en werking van het trapstel."
+ },
+ {
+  "name": "Zadel vervangen",
+  "slug": "zadel-vervangen",
+  "price": 89.0,
+  "sub": "Origineel zadel",
+  "image": "/parts/zadel-vervangen.jpg",
+  "desc": "Inclusief demonteren van het oude zadel, monteren van het nieuwe zadel en afstellen op juiste hoogte en positie voor comfortabele zithouding."
+ },
+ {
+  "name": "Overige",
+  "slug": "overige",
+  "price": 0.0,
+  "sub": "Overige reparaties",
+  "image": "/parts/overige.jpg",
+  "desc": "Geen zorgen – ook voor speciale of minder voorkomende problemen met je fatbike kun je bij ons terecht. Geef op de volgende pagina zo goed mogelijk aan wat er aan de hand is, dan kijken wij samen naar "
+ }
+]

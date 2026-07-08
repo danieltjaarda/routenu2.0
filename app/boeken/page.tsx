@@ -2,18 +2,23 @@
 
 import { useEffect, useMemo, useState } from "react";
 import AddressSearch from "@/components/AddressSearch";
-import { BRANDS, REPAIRS, type BikeBrand } from "@/lib/catalog";
+import { BRANDS, type BikeBrand, type RepairService } from "@/lib/catalog";
 import type { Availability } from "@/lib/types";
 
 const STEPS = ["Merk", "Model", "Reparatie", "Datum", "Gegevens"] as const;
 
+function fmtPrice(n: number) {
+  return n % 1 === 0 ? `€ ${n.toFixed(0)},-` : `€ ${n.toFixed(2).replace(".", ",")}`;
+}
+
 export default function BookingPage() {
   const [step, setStep] = useState(0);
   const [availability, setAvailability] = useState<Availability[]>([]);
+  const [services, setServices] = useState<RepairService[]>([]);
 
   const [brand, setBrand] = useState<BikeBrand | null>(null);
   const [model, setModel] = useState("");
-  const [repair, setRepair] = useState("");
+  const [selectedRepairs, setSelectedRepairs] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
 
@@ -28,15 +33,24 @@ export default function BookingPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/availability?future=1")
-      .then((r) => r.json())
-      .then(setAvailability);
+    fetch("/api/availability?future=1").then((r) => r.json()).then(setAvailability);
+    fetch("/api/services").then((r) => r.json()).then(setServices);
   }, []);
 
   const availableDates = useMemo(() => {
     const unique = [...new Set(availability.map((a) => a.date))];
     return unique.sort();
   }, [availability]);
+
+  const chosenServices = useMemo(
+    () => services.filter((s) => selectedRepairs.includes(s.slug)),
+    [services, selectedRepairs]
+  );
+  const total = useMemo(
+    () => chosenServices.reduce((sum, s) => sum + (s.price || 0), 0),
+    [chosenServices]
+  );
+  const hasOverige = selectedRepairs.includes("overige");
 
   function fmtDate(d: string) {
     return new Date(d + "T00:00:00").toLocaleDateString("nl-NL", {
@@ -61,6 +75,12 @@ export default function BookingPage() {
     next();
   }
 
+  function toggleRepair(slug: string) {
+    setSelectedRepairs((prev) =>
+      prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]
+    );
+  }
+
   async function submit() {
     setError("");
     if (!customerName.trim()) return setError("Vul uw naam in.");
@@ -81,7 +101,7 @@ export default function BookingPage() {
           lat: coords.lat,
           brand: brand?.name,
           model: model || undefined,
-          repair: REPAIRS.find((r) => r.id === repair)?.name ?? repair,
+          repairs: chosenServices.map((s) => ({ name: s.name, price: s.price })),
           description: description.trim() || undefined,
         }),
       });
@@ -103,7 +123,9 @@ export default function BookingPage() {
           <div style={{ fontSize: 44 }}>✅</div>
           <h1 style={{ marginTop: 12 }}>Aanmelding gelukt!</h1>
           <p style={{ color: "var(--muted)" }}>
-            Uw reparatie is ingepland op <strong>{fmtDate(date)}</strong>.<br />
+            Uw reparatie is ingepland op <strong>{fmtDate(date)}</strong>.
+            {total > 0 && <> Verwachte kosten: <strong>{fmtPrice(total)}</strong>{hasOverige ? " (excl. overige reparatie)" : ""}.</>}
+            <br />
             U ontvangt een bevestiging{email && phone ? " per e-mail en WhatsApp" : email ? " per e-mail" : " per WhatsApp"} met later ook het verwachte tijdvak.
           </p>
           <button
@@ -113,7 +135,7 @@ export default function BookingPage() {
               setStep(0);
               setBrand(null);
               setModel("");
-              setRepair("");
+              setSelectedRepairs([]);
               setDescription("");
               setDate("");
               setCustomerName("");
@@ -131,11 +153,10 @@ export default function BookingPage() {
   }
 
   return (
-    <div className="page" style={{ maxWidth: 640 }}>
+    <div className="page" style={{ maxWidth: 720 }}>
       <h1>Reparatie aanmelden</h1>
       <p className="subtitle">Meld uw fatbike aan voor reparatie aan huis, in een paar stappen.</p>
 
-      {/* stappenbalk */}
       <div className="steps">
         {STEPS.map((label, i) => (
           <div key={label} className={`step ${i === step ? "active" : ""} ${i < step ? "done" : ""}`}>
@@ -152,7 +173,13 @@ export default function BookingPage() {
             <div className="brand-grid">
               {BRANDS.map((b) => (
                 <button key={b.id} className="brand-card" onClick={() => chooseBrand(b)}>
-                  {b.name}
+                  {b.logo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={b.logo} alt={b.name} />
+                  ) : (
+                    b.name
+                  )}
+                  <span className="bn">{b.name}</span>
                 </button>
               ))}
             </div>
@@ -162,7 +189,9 @@ export default function BookingPage() {
         {step === 1 && brand && (
           <>
             <h3 style={{ marginTop: 0 }}>
-              {brand.freeModel ? `Welk model ${brand.name === "Overig" ? "en merk" : brand.name} heeft u?` : `Welk model ${brand.name} heeft u?`}
+              {brand.freeModel
+                ? `Welk model ${brand.name === "Overig" ? "en merk" : brand.name} heeft u?`
+                : `Welk model ${brand.name} heeft u?`}
             </h3>
             {brand.freeModel ? (
               <>
@@ -192,18 +221,10 @@ export default function BookingPage() {
                       }}
                     >
                       <span className="img">
-                        {m.image ? (
+                        {m.image && (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={m.image}
-                            alt={m.name}
-                            onError={(e) => {
-                              (e.currentTarget.style.display = "none");
-                              e.currentTarget.parentElement!.classList.add("placeholder");
-                            }}
-                          />
-                        ) : null}
-                        <span className="fallback">🚲</span>
+                          <img src={m.image} alt={m.name} />
+                        )}
                       </span>
                       <span className="name">{m.name}</span>
                     </button>
@@ -219,28 +240,57 @@ export default function BookingPage() {
 
         {step === 2 && (
           <>
-            <h3 style={{ marginTop: 0 }}>Wat voor reparatie heeft u nodig?</h3>
-            {REPAIRS.map((r) => (
-              <label key={r.id} className={`type-option ${repair === r.id ? "selected" : ""}`}>
-                <input type="radio" name="repair" checked={repair === r.id} onChange={() => setRepair(r.id)} />
-                {r.name}
+            <h3 style={{ marginTop: 0 }}>Vertel ons wat er kapot is</h3>
+            <p style={{ fontSize: 13, color: "var(--muted)", marginTop: -8 }}>
+              Selecteer één of meerdere reparaties. Staat jouw reparatie er niet tussen? Kies dan &lsquo;Overige&rsquo;.
+            </p>
+            <div className="repair-grid">
+              {services.map((s) => {
+                const on = selectedRepairs.includes(s.slug);
+                return (
+                  <button key={s.slug} className={`repair-card ${on ? "selected" : ""}`} onClick={() => toggleRepair(s.slug)}>
+                    <span className="img">
+                      {s.image && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={s.image} alt="" />
+                      )}
+                    </span>
+                    <span className="body">
+                      <span className="name">{s.name}</span>
+                      <span className="sub">{s.sub}</span>
+                    </span>
+                    <span className="price">{s.price > 0 ? fmtPrice(s.price) : "op aanvraag"}</span>
+                    <span className={`check ${on ? "on" : ""}`}>{on ? "✓" : "+"}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {(hasOverige || selectedRepairs.length > 0) && (
+              <label className="field" style={{ marginTop: 16 }}>
+                Toelichting {hasOverige ? <span className="req">*</span> : "(optioneel)"}
+                <textarea
+                  rows={2}
+                  placeholder="Omschrijf het probleem..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
               </label>
-            ))}
-            <label className="field" style={{ marginTop: 12 }}>
-              Toelichting {repair === "anders" ? <span className="req">*</span> : "(optioneel)"}
-              <textarea
-                rows={2}
-                placeholder="Omschrijf het probleem..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </label>
+            )}
+
+            {selectedRepairs.length > 0 && (
+              <div className="total-bar">
+                <span>{selectedRepairs.length} reparatie{selectedRepairs.length > 1 ? "s" : ""} geselecteerd</span>
+                <strong>Totaal: {fmtPrice(total)}{hasOverige ? " + op aanvraag" : ""}</strong>
+              </div>
+            )}
+
             <div className="wizard-nav">
               <button className="btn ghost" onClick={back}>← Terug</button>
               <button
                 className="btn"
                 onClick={next}
-                disabled={!repair || (repair === "anders" && !description.trim())}
+                disabled={selectedRepairs.length === 0 || (hasOverige && !description.trim())}
               >
                 Volgende →
               </button>
@@ -252,9 +302,7 @@ export default function BookingPage() {
           <>
             <h3 style={{ marginTop: 0 }}>Kies een dag</h3>
             {availableDates.length === 0 ? (
-              <div className="notice">
-                Er zijn op dit moment geen dagen beschikbaar. Probeer het later opnieuw.
-              </div>
+              <div className="notice">Er zijn op dit moment geen dagen beschikbaar. Probeer het later opnieuw.</div>
             ) : (
               <div className="date-grid">
                 {availableDates.map((d) => (
@@ -280,8 +328,18 @@ export default function BookingPage() {
         {step === 4 && (
           <>
             <h3 style={{ marginTop: 0 }}>Uw gegevens</h3>
-            <div className="notice" style={{ background: "#eef9fc", borderColor: "#c8ecf5", color: "#1a7a94" }}>
-              {brand?.name} {model} · {REPAIRS.find((r) => r.id === repair)?.name} · {fmtDate(date)}
+            <div className="summary-box">
+              <div><strong>{brand?.name} {model}</strong> · {fmtDate(date)}</div>
+              {chosenServices.map((s) => (
+                <div key={s.slug} className="line">
+                  <span>{s.name}</span>
+                  <span>{s.price > 0 ? fmtPrice(s.price) : "op aanvraag"}</span>
+                </div>
+              ))}
+              <div className="line total">
+                <span>Totaal</span>
+                <span>{fmtPrice(total)}{hasOverige ? " + op aanvraag" : ""}</span>
+              </div>
             </div>
             <label className="field">
               Volledige naam <span className="req">*</span>

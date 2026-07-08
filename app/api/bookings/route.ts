@@ -7,13 +7,15 @@ export const dynamic = "force-dynamic";
 
 /**
  * Publieke boeking: maakt een stop aan in de route van de gekozen datum.
- * body: { date, customerName, email?, phone?, address, lng, lat, brand, model, repair, description? }
+ * body: { date, customerName, email?, phone?, address, lng, lat, brand, model,
+ *         repairs: { name, price }[], description? }
  */
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { date, customerName, email, phone, address, lng, lat, brand, model, repair, description } = body;
+  const { date, customerName, email, phone, address, lng, lat, brand, model, description } = body;
+  const repairs = (body.repairs ?? []) as { name: string; price: number }[];
 
-  if (!date || !customerName || !address || lng == null || lat == null || !brand || !repair) {
+  if (!date || !customerName || !address || lng == null || lat == null || !brand || repairs.length === 0) {
     return NextResponse.json({ error: "Verplichte velden ontbreken" }, { status: 400 });
   }
   if (!email && !phone) {
@@ -27,7 +29,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Deze datum is niet beschikbaar" }, { status: 409 });
   }
 
-  const notes = [`${brand}${model ? ` ${model}` : ""}`, repair, description]
+  const total = repairs.reduce((sum, r) => sum + (r.price || 0), 0);
+  const repairNames = repairs.map((r) => r.name).join(", ");
+  const notes = [`${brand}${model ? ` ${model}` : ""}`, repairNames, description]
     .filter(Boolean)
     .join(" - ");
 
@@ -41,7 +45,8 @@ export async function POST(req: NextRequest) {
     lat,
     type: "bezorgen",
     notes,
-    serviceMinutes: 30,
+    amountDue: total > 0 ? total : undefined,
+    serviceMinutes: Math.max(30, repairs.length * 20),
     status: "open",
   };
 

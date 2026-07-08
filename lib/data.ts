@@ -1,9 +1,11 @@
 import { kvGet, kvSet } from "./store";
 import type { Route, Driver, Availability } from "./types";
+import { DEFAULT_SERVICES, type RepairService } from "./catalog";
 
 const ROUTES_KEY = "routenu:routes";
 const DRIVERS_KEY = "routenu:drivers";
 const AVAILABILITY_KEY = "routenu:availability";
+const SERVICES_KEY = "routenu:services";
 
 export async function getRoutes(): Promise<Route[]> {
   return (await kvGet<Route[]>(ROUTES_KEY)) ?? [];
@@ -54,4 +56,17 @@ export async function getAvailability(): Promise<Availability[]> {
 
 export async function saveAvailability(items: Availability[]): Promise<void> {
   await kvSet(AVAILABILITY_KEY, items);
+}
+
+/** Reparatiediensten: standaardlijst uit de scrape, prijzen overschrijfbaar via KV */
+export async function getServices(): Promise<RepairService[]> {
+  const saved = await kvGet<RepairService[]>(SERVICES_KEY);
+  if (!saved || saved.length === 0) return DEFAULT_SERVICES;
+  // nieuwe standaarddiensten meenemen die nog niet in KV staan
+  const savedSlugs = new Set(saved.map((s) => s.slug));
+  return [...saved, ...DEFAULT_SERVICES.filter((s) => !savedSlugs.has(s.slug))];
+}
+
+export async function saveServices(services: RepairService[]): Promise<void> {
+  await kvSet(SERVICES_KEY, services);
 }
