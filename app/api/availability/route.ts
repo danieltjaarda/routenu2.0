@@ -19,15 +19,21 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(items);
 }
 
-/** body: { date, driverId, available: boolean } — zet beschikbaarheid aan/uit */
+/** body: { date, driverId, available: boolean, provinces?: string[] } — zet beschikbaarheid (met provincies) aan/uit */
 export async function POST(req: NextRequest) {
-  const { date, driverId, available } = await req.json();
+  const { date, driverId, available, provinces } = await req.json();
   if (!date || !driverId) {
     return NextResponse.json({ error: "date en driverId zijn verplicht" }, { status: 400 });
   }
   let items = await getAvailability();
   items = items.filter((a) => !(a.date === date && a.driverId === driverId));
-  if (available) items.push({ date, driverId });
+  if (available) {
+    items.push({
+      date,
+      driverId,
+      ...(Array.isArray(provinces) && provinces.length > 0 ? { provinces } : {}),
+    });
+  }
   await saveAvailability(items);
   return NextResponse.json({ ok: true });
 }

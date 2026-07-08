@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import AddressSearch from "@/components/AddressSearch";
 import { BRANDS, type BikeBrand, type RepairService } from "@/lib/catalog";
 import type { Availability } from "@/lib/types";
+import { PROVINCES } from "@/lib/types";
 
 const STEPS = ["Merk", "Model", "Reparatie", "Datum", "Gegevens"] as const;
 
@@ -21,6 +22,12 @@ export default function BookingPage() {
   const [selectedRepairs, setSelectedRepairs] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
+
+  const [postcode, setPostcode] = useState("");
+  const [huisnummer, setHuisnummer] = useState("");
+  const [province, setProvince] = useState("");
+  const [lookupBusy, setLookupBusy] = useState(false);
+  const [lookupError, setLookupError] = useState("");
 
   const [customerName, setCustomerName] = useState("");
   const [email, setEmail] = useState("");
@@ -69,10 +76,51 @@ export default function BookingPage() {
     fetch("/api/services").then((r) => r.json()).then(setServices);
   }, []);
 
+  // alleen dagen tonen die voor de provincie van de klant beschikbaar zijn
   const availableDates = useMemo(() => {
-    const unique = [...new Set(availability.map((a) => a.date))];
-    return unique.sort();
-  }, [availability]);
+    if (!province) return [];
+    const matching = availability.filter(
+      (a) => !a.provinces || a.provinces.length === 0 || a.provinces.includes(province)
+    );
+    return [...new Set(matching.map((a) => a.date))].sort();
+  }, [availability, province]);
+
+  function normalizeProvince(name: string): string {
+    const n = name.toLowerCase();
+    if (n.includes("frysl")) return "Friesland";
+    return PROVINCES.find((p) => p.toLowerCase() === n) ?? name;
+  }
+
+  async function lookupPostcode() {
+    const pc = postcode.replace(/\s+/g, "").toUpperCase();
+    if (!/^\d{4}[A-Z]{2}$/.test(pc) || !huisnummer.trim()) {
+      setLookupError("Vul een geldige postcode (bijv. 1234AB) en huisnummer in.");
+      return;
+    }
+    setLookupBusy(true);
+    setLookupError("");
+    try {
+      const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
+      const q = `${huisnummer.trim()} ${pc}`;
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?access_token=${token}&country=nl&language=nl&types=address&limit=1`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const f = data.features?.[0];
+      const region = f?.context?.find((c: { id: string; text: string }) => c.id.startsWith("region"))?.text ?? "";
+      if (!f || !region) {
+        setLookupError("Adres niet gevonden. Controleer postcode en huisnummer.");
+        return;
+      }
+      setProvince(normalizeProvince(region));
+      // adres alvast invullen voor de laatste stap
+      setAddress(f.place_name);
+      setCoords({ lng: f.center[0], lat: f.center[1] });
+    } catch {
+      setLookupError("Zoeken mislukt. Probeer het opnieuw.");
+    } finally {
+      setLookupBusy(false);
+    }
+  }
 
   const chosenServices = useMemo(
     () => services.filter((s) => selectedRepairs.includes(s.slug)),
@@ -203,6 +251,9 @@ export default function BookingPage() {
               setSelectedRepairs([]);
               setDescription("");
               setDate("");
+              setPostcode("");
+              setHuisnummer("");
+              setProvince("");
               setCustomerName("");
               setEmail("");
               setPhone("");
@@ -419,24 +470,84 @@ export default function BookingPage() {
         {step === 3 && (
           <>
             <h3 style={{ marginTop: 0 }}>Kies een dag</h3>
-            {availableDates.length === 0 ? (
-              <div className="notice">Er zijn op dit moment geen dagen beschikbaar. Probeer het later opnieuw.</div>
-            ) : (
-              <div className="date-grid">
-                {availableDates.map((d) => (
+
+            {!province ? (
+              <>
+                <p style={{ fontSize: 13, color: "var(--muted)", marginTop: -4 }}>
+                  Vul eerst uw postcode en huisnummer in, dan tonen we de dagen waarop we bij u in de buurt zijn.
+                </p>
+                <div className="pc-row">
+                  <label className="field" style={{ margin: 0, flex: 1 }}>
+                    Postcode
+                    <input
+                      placeholder="1234AB"
+                      value={postcode}
+                      onChange={(e) => setPostcode(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && lookupPostcode()}
+                    />
+                  </label>
+                  <label className="field" style={{ margin: 0, flex: 1 }}>
+                    Huisnummer
+                    <input
+                      placeholder="12"
+                      value={huisnummer}
+                      onChange={(e) => setHuisnummer(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && lookupPostcode()}
+                    />
+                  </label>
                   <button
-                    key={d}
-                    className={`date-card ${date === d ? "selected" : ""}`}
+                    className="btn"
+                    style={{ alignSelf: "flex-end" }}
+                    onClick={lookupPostcode}
+                    disabled={lookupBusy || !postcode.trim() || !huisnummer.trim()}
+                  >
+                    {lookupBusy ? (
+                      <span className="ai-btn-busy"><span className="ai-spinner" />Zoeken</span>
+                    ) : (
+                      "Toon dagen"
+                    )}
+                  </button>
+                </div>
+                {lookupError && <div style={{ color: "var(--danger)", fontSize: 13, marginTop: 10 }}>{lookupError}</div>}
+              </>
+            ) : (
+              <>
+                <div className="pc-found">
+                  <span>✓ {address} — provincie <strong>{province}</strong></span>
+                  <button
+                    type="button"
+                    className="pc-change"
                     onClick={() => {
-                      setDate(d);
-                      next();
+                      setProvince("");
+                      setDate("");
                     }}
                   >
-                    {fmtDate(d)}
+                    wijzig
                   </button>
-                ))}
-              </div>
+                </div>
+                {availableDates.length === 0 ? (
+                  <div className="notice">
+                    Er zijn op dit moment geen beschikbare dagen in {province}. Probeer het later opnieuw.
+                  </div>
+                ) : (
+                  <div className="date-grid">
+                    {availableDates.map((d) => (
+                      <button
+                        key={d}
+                        className={`date-card ${date === d ? "selected" : ""}`}
+                        onClick={() => {
+                          setDate(d);
+                          next();
+                        }}
+                      >
+                        {fmtDate(d)}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
+
             <div className="wizard-nav">
               <button className="btn ghost" onClick={back}>← Terug</button>
             </div>

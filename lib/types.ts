@@ -59,8 +59,26 @@ export interface Driver {
   email?: string;
 }
 
+export const PROVINCES = [
+  "Groningen",
+  "Friesland",
+  "Drenthe",
+  "Overijssel",
+  "Flevoland",
+  "Gelderland",
+  "Utrecht",
+  "Noord-Holland",
+  "Zuid-Holland",
+  "Zeeland",
+  "Noord-Brabant",
+  "Limburg",
+] as const;
+export type Province = (typeof PROVINCES)[number];
+
 /** Datum waarop een chauffeur beschikbaar is voor klant-boekingen */
 export interface Availability {
   date: string; // YYYY-MM-DD
   driverId: string;
+  /** Provincies waarvoor deze dag boekbaar is; ontbreekt = alle provincies */
+  provinces?: string[];
 }
