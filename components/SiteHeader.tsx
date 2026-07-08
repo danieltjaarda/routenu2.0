@@ -17,6 +17,17 @@ export default function SiteHeader() {
     );
   }
 
+  // inlogpagina: alleen het logo, geen navigatie
+  if (pathname?.startsWith("/login")) {
+    return (
+      <header className="topbar">
+        <span className="logo">
+          R<span className="logo-o">o</span>ute<span className="logo-nu">nu</span>
+        </span>
+      </header>
+    );
+  }
+
   return (
     <header className="topbar">
       <Link href="/" className="logo">
