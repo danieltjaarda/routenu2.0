@@ -67,6 +67,7 @@ export const PROVINCES = [
   "Overijssel (west)",
   "Overijssel (oost)",
   "Flevoland",
+  "Gelderland (noord)",
   "Gelderland (west)",
   "Gelderland (oost)",
   "Utrecht",
@@ -83,12 +84,16 @@ export type Province = (typeof PROVINCES)[number];
 const PROVINCE_SPLITS: Record<string, { axis: "lat" | "lon"; value: number }> = {
   Drenthe: { axis: "lat", value: 52.908 },
   Overijssel: { axis: "lon", value: 6.4335 },
-  Gelderland: { axis: "lon", value: 5.9145 },
   "Zuid-Holland": { axis: "lat", value: 51.9915 },
 };
 
-/** Bepaal de regio (evt. provinciehelft) op basis van provincienaam en coördinaten */
+/** Bepaal de regio (evt. provinciedeel) op basis van provincienaam en coördinaten */
 export function regionForLocation(province: string, lng: number, lat: number): string {
+  if (province === "Gelderland") {
+    // noord boven de lat-scheidslijn; zuidelijk deel gesplitst in west/oost
+    if (lat >= 52.127) return "Gelderland (noord)";
+    return `Gelderland (${lng >= 5.9145 ? "oost" : "west"})`;
+  }
   const split = PROVINCE_SPLITS[province];
   if (!split) return province;
   if (split.axis === "lat") return `${province} (${lat >= split.value ? "noord" : "zuid"})`;
