@@ -247,39 +247,157 @@ export default function BookingPage() {
   }
 
   if (done) {
+    const via = email && phone ? "per e-mail en WhatsApp" : email ? "per e-mail" : "per WhatsApp";
     return (
-      <div className="page" style={{ maxWidth: 560 }}>
-        <div className="card success-pop" style={{ textAlign: "center", padding: 40 }}>
-          <div style={{ fontSize: 44 }}>✅</div>
-          <h1 style={{ marginTop: 12 }}>Aanmelding gelukt!</h1>
-          <p style={{ color: "var(--muted)" }}>
-            Uw reparatie is ingepland op <strong>{fmtDate(date)} tussen 17:00 - 18:00</strong>.
-            {total > 0 && <> Verwachte kosten: <strong>{fmtPrice(totalWithFee)}</strong> incl. onderdelen, arbeid en voorrijkosten{hasOverige ? " (excl. overige reparatie)" : ""}.</>}
-            <br />
-            U ontvangt een bevestiging{email && phone ? " per e-mail en WhatsApp" : email ? " per e-mail" : " per WhatsApp"} met later ook het verwachte tijdvak.
-          </p>
-          <button
-            className="btn"
-            onClick={() => {
-              setDone(false);
-              setStep(0);
-              setBrand(null);
-              setModel("");
-              setSelectedRepairs([]);
-              setDescription("");
-              setDate("");
-              setPostcode("");
-              setHuisnummer("");
-              setProvince("");
-              setCustomerName("");
-              setEmail("");
-              setPhone("");
-              setAddress("");
-              setCoords(null);
-            }}
-          >
-            Nog een aanmelding doen
-          </button>
+      <div className="page" style={{ maxWidth: 620 }}>
+        <div className="success-pop">
+          <div className="success-hero">
+            <div className="success-icon">✓</div>
+            <h1>Aanmelding gelukt!</h1>
+            <p>
+              Bedankt {customerName.split(" ")[0]}! Uw reparatie aan huis is ingepland.
+              U ontvangt zo een bevestiging {via}.
+            </p>
+          </div>
+
+          <div className="card done-card">
+            <h3>Uw afspraak</h3>
+            <div className="done-row">
+              <span className="done-ic">📅</span>
+              <div>
+                <strong>{fmtDate(date)}</strong>
+                <div className="done-sub">tussen 17:00 - 18:00 · exact tijdslot volgt die ochtend per e-mail</div>
+              </div>
+            </div>
+            <div className="done-row">
+              <span className="done-ic">📍</span>
+              <div>
+                <strong>{address}</strong>
+                <div className="done-sub">De monteur komt bij u aan huis</div>
+              </div>
+            </div>
+            <div className="done-row">
+              <span className="done-ic">🚲</span>
+              <div>
+                <strong>{brand?.name}{model ? ` ${model}` : ""}</strong>
+                <div className="done-sub">Zet uw fatbike alvast klaar</div>
+              </div>
+            </div>
+
+            <div className="summary-box" style={{ marginTop: 14 }}>
+              {chosenServices.map((s) => (
+                <div key={s.slug} className="line">
+                  <span>{s.name}</span>
+                  <span>{s.price > 0 ? fmtPrice(s.price) : "op aanvraag"}</span>
+                </div>
+              ))}
+              <div className="line">
+                <span>Voorrijkosten</span>
+                <span>{fmtPrice(VOORRIJKOSTEN)}</span>
+              </div>
+              <div className="line total">
+                <span>Totaal</span>
+                <span>{fmtPrice(totalWithFee)}{hasOverige ? " + op aanvraag" : ""}</span>
+              </div>
+              <div style={{ fontWeight: 800, fontSize: 13, color: "var(--dark)", marginTop: 6, textAlign: "right" }}>
+                incl. onderdelen, arbeid en voorrijkosten
+              </div>
+            </div>
+          </div>
+
+          <div className="card done-card">
+            <h3>Hoe werkt het verder?</h3>
+            <div className="done-steps">
+              <div className="done-step">
+                <span className="done-step-nr">1</span>
+                <div>
+                  <strong>Bevestiging</strong>
+                  <div className="done-sub">U ontvangt direct een bevestiging {via} met alle details van uw aanmelding.</div>
+                </div>
+              </div>
+              <div className="done-step">
+                <span className="done-step-nr">2</span>
+                <div>
+                  <strong>Tijdslot op de ochtend zelf</strong>
+                  <div className="done-sub">Op de ochtend van uw afspraak ontvangt u per e-mail het exacte tijdslot waarin de monteur bij u langskomt.</div>
+                </div>
+              </div>
+              <div className="done-step">
+                <span className="done-step-nr">3</span>
+                <div>
+                  <strong>Reparatie aan huis</strong>
+                  <div className="done-sub">Onze monteur repareert uw fatbike ter plekke. U rekent pas af na afloop van de reparatie.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="card done-card">
+            <h3>Veelgestelde vragen</h3>
+            <div className="faq">
+              <details>
+                <summary>Hoe laat komt de monteur precies?</summary>
+                <p>
+                  Wij houden standaard het tijdvak tussen 17:00 en 18:00 aan. Op de ochtend van uw
+                  afspraak ontvangt u per e-mail het exacte tijdslot, zodat u precies weet wanneer u
+                  de monteur kunt verwachten.
+                </p>
+              </details>
+              <details>
+                <summary>Moet ik thuis zijn tijdens de reparatie?</summary>
+                <p>
+                  Ja, u (of iemand anders) moet aanwezig zijn om de fatbike te overhandigen en na
+                  afloop af te rekenen. Zet de fatbike alvast klaar en zorg dat de accu aanwezig is.
+                </p>
+              </details>
+              <details>
+                <summary>Hoe kan ik betalen?</summary>
+                <p>
+                  U betaalt pas nadat de reparatie is uitgevoerd, direct bij de monteur. Vooraf
+                  betalen is niet nodig.
+                </p>
+              </details>
+              <details>
+                <summary>Komen er nog extra kosten bij?</summary>
+                <p>
+                  Nee, de totaalprijs is inclusief onderdelen, arbeid en voorrijkosten. Blijkt er
+                  ter plekke meer nodig te zijn, dan overlegt de monteur dit altijd eerst met u.
+                </p>
+              </details>
+              <details>
+                <summary>Kan ik mijn afspraak wijzigen of annuleren?</summary>
+                <p>
+                  Dat kan kosteloos. Reageer op de bevestiging per e-mail of WhatsApp en wij plannen
+                  samen een nieuw moment in.
+                </p>
+              </details>
+            </div>
+          </div>
+
+          <div style={{ textAlign: "center", marginTop: 20 }}>
+            <button
+              className="btn"
+              onClick={() => {
+                setDone(false);
+                setStep(0);
+                setBrand(null);
+                setModel("");
+                setSelectedRepairs([]);
+                setDescription("");
+                setDate("");
+                setPostcode("");
+                setHuisnummer("");
+                setProvince("");
+                setCustomerName("");
+                setEmail("");
+                setPhone("");
+                setAddress("");
+                setCoords(null);
+              }}
+            >
+              Nog een aanmelding doen
+            </button>
+          </div>
         </div>
       </div>
     );
