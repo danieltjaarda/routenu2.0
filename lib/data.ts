@@ -58,13 +58,12 @@ export async function saveAvailability(items: Availability[]): Promise<void> {
   await kvSet(AVAILABILITY_KEY, items);
 }
 
-/** Reparatiediensten: standaardlijst uit de scrape, prijzen overschrijfbaar via KV */
+/** Reparatiediensten: naam/volgorde/teksten uit de code, alleen prijzen overschrijfbaar via KV */
 export async function getServices(): Promise<RepairService[]> {
   const saved = await kvGet<RepairService[]>(SERVICES_KEY);
   if (!saved || saved.length === 0) return DEFAULT_SERVICES;
-  // nieuwe standaarddiensten meenemen die nog niet in KV staan
-  const savedSlugs = new Set(saved.map((s) => s.slug));
-  return [...saved, ...DEFAULT_SERVICES.filter((s) => !savedSlugs.has(s.slug))];
+  const priceBySlug = new Map(saved.map((s) => [s.slug, s.price]));
+  return DEFAULT_SERVICES.map((s) => ({ ...s, price: priceBySlug.get(s.slug) ?? s.price }));
 }
 
 export async function saveServices(services: RepairService[]): Promise<void> {

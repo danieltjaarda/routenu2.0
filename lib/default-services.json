@@ -1,6 +1,6 @@
 [
  {
-  "name": "Binnenband voor vervangen",
+  "name": "Binnenband vervangen (voor)",
   "slug": "binnenband-voor-vervangen",
   "price": 39.0,
   "sub": "Lekke band",
@@ -8,7 +8,7 @@
   "desc": "Vervangen van de binnenband van een fatbike-wiel. Inclusief verwijderen van het wiel, demonteren van de band, plaatsen van een nieuwe binnenband en weer monteren. Controle op lekkage en juiste bandens"
  },
  {
-  "name": "Binnenband achter vervangen",
+  "name": "Binnenband vervangen (achter)",
   "slug": "binnenband-achter-vervangen",
   "price": 49.0,
   "sub": "Lekke band",
@@ -16,7 +16,7 @@
   "desc": "Vervangen van de achterste binnenband van een fatbike. Inclusief demontage van het wiel, vervangen van de binnenband en herplaatsen van het wiel. Bandenspanning wordt gecontroleerd en juist afgesteld."
  },
  {
-  "name": "Buitenband voor vervangen",
+  "name": "Buitenband vervangen (voor)",
   "slug": "buitenband-voor-vervangen",
   "price": 59.0,
   "sub": "Kenda buitenband",
@@ -24,7 +24,7 @@
   "desc": "Vervangen van de buitenband van een fatbike. Inclusief demontage van het wiel, verwijderen van oude band, plaatsen van nieuwe buitenband en herinstallatie. Controle op bandenspanning en juiste montage"
  },
  {
-  "name": "Buitenband achter vervangen",
+  "name": "Buitenband vervangen (achter)",
   "slug": "buitenband-achter-vervangen",
   "price": 79.0,
   "sub": "Kenda buitenband",
