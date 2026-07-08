@@ -36,6 +36,23 @@ export default function BookingPage() {
   const [aiBusy, setAiBusy] = useState(false);
   const [aiUitleg, setAiUitleg] = useState("");
   const [aiPicked, setAiPicked] = useState<string[]>([]);
+  const [aiTyped, setAiTyped] = useState("");
+
+  // Typemachine-effect voor het AI-antwoord
+  useEffect(() => {
+    if (!aiUitleg) {
+      setAiTyped("");
+      return;
+    }
+    setAiTyped("");
+    let i = 0;
+    const timer = setInterval(() => {
+      i += 1;
+      setAiTyped(aiUitleg.slice(0, i));
+      if (i >= aiUitleg.length) clearInterval(timer);
+    }, 20);
+    return () => clearInterval(timer);
+  }, [aiUitleg]);
 
   // AI-gekozen reparaties bovenaan tonen, rest in oorspronkelijke volgorde
   const sortedServices = useMemo(() => {
@@ -326,7 +343,18 @@ export default function BookingPage() {
                   <span className="ai-thinking-text">AI analyseert je omschrijving...</span>
                 </div>
               )}
-              {!aiBusy && aiUitleg && <div className="ai-uitleg">💡 {aiUitleg}</div>}
+              {!aiBusy && aiUitleg && (
+                <div className="ai-answer">
+                  <span className="ai-avatar">✨</span>
+                  <span className="ai-answer-body">
+                    <span className="ai-answer-label">AI-advies</span>
+                    <span className="ai-answer-text">
+                      {aiTyped}
+                      {aiTyped.length < aiUitleg.length && <span className="ai-cursor" />}
+                    </span>
+                  </span>
+                </div>
+              )}
             </div>
 
             <p style={{ fontSize: 13, color: "var(--muted)" }}>
