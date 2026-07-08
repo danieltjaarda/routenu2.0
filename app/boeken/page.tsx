@@ -253,7 +253,7 @@ export default function BookingPage() {
           <div style={{ fontSize: 44 }}>✅</div>
           <h1 style={{ marginTop: 12 }}>Aanmelding gelukt!</h1>
           <p style={{ color: "var(--muted)" }}>
-            Uw reparatie is ingepland op <strong>{fmtDate(date)}</strong>.
+            Uw reparatie is ingepland op <strong>{fmtDate(date)} tussen 17:00 - 18:00</strong>.
             {total > 0 && <> Verwachte kosten: <strong>{fmtPrice(totalWithFee)}</strong> incl. onderdelen, arbeid en voorrijkosten{hasOverige ? " (excl. overige reparatie)" : ""}.</>}
             <br />
             U ontvangt een bevestiging{email && phone ? " per e-mail en WhatsApp" : email ? " per e-mail" : " per WhatsApp"} met later ook het verwachte tijdvak.
@@ -305,6 +305,9 @@ export default function BookingPage() {
                     b.name
                   )}
                   <span className="bn">{b.name}</span>
+                  <span className="bm">
+                    {b.models.length > 0 ? b.models.map((m) => m.name).join(" · ") : "Alle modellen"}
+                  </span>
                 </button>
               ))}
             </div>
@@ -549,6 +552,7 @@ export default function BookingPage() {
                         }}
                       >
                         {fmtDate(d)}
+                        <span className="dc-time">tussen 17:00 - 18:00</span>
                       </button>
                     ))}
                   </div>
@@ -567,7 +571,7 @@ export default function BookingPage() {
           <>
             <h3 style={{ marginTop: 0 }}>Uw gegevens</h3>
             <div className="summary-box">
-              <div><strong>{brand?.name} {model}</strong> · {fmtDate(date)}</div>
+              <div><strong>{brand?.name} {model}</strong> · {fmtDate(date)} tussen 17:00 - 18:00</div>
               {chosenServices.map((s) => (
                 <div key={s.slug} className="line">
                   <span>{s.name}</span>
