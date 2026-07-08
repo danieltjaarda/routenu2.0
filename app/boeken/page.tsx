@@ -295,7 +295,7 @@ export default function BookingPage() {
         ))}
       </div>
 
-      <div className="card" style={{ marginTop: 18, overflow: "hidden" }}>
+      <div className={step === 2 ? "step-bare" : "card"} style={{ marginTop: 18, overflow: "hidden" }}>
         <div key={step} className={`step-pane ${slideDir}`}>
         {step === 0 && (
           <>

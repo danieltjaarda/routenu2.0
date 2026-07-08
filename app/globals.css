@@ -528,6 +528,9 @@ table.data tr:hover td { background: var(--bg); }
 .step.done { color: var(--success); }
 .step.done .n { background: var(--success); color: #fff; }
 
+/* reparatiestap zonder kaart-widget eromheen */
+.step-bare { background: none; border: 0; padding: 0; }
+
 /* overgangen tussen wizard-stappen */
 .step-pane.fwd { animation: pane-in-fwd 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
 .step-pane.back { animation: pane-in-back 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
