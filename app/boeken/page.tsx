@@ -50,7 +50,7 @@ export default function BookingPage() {
       i += 1;
       setAiTyped(aiUitleg.slice(0, i));
       if (i >= aiUitleg.length) clearInterval(timer);
-    }, 20);
+    }, 32);
     return () => clearInterval(timer);
   }, [aiUitleg]);
 
