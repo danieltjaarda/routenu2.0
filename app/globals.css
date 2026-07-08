@@ -430,10 +430,33 @@ table.data tr:hover td { background: var(--bg); }
   font-size: 11px;
   font-weight: 700;
 }
+.step { transition: border-color 0.3s ease, color 0.3s ease; }
+.step .n { transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease; }
 .step.active { border-color: var(--primary); color: var(--dark); }
-.step.active .n { background: var(--primary); color: #fff; }
+.step.active .n { background: var(--primary); color: #fff; transform: scale(1.12); }
 .step.done { color: var(--success); }
 .step.done .n { background: var(--success); color: #fff; }
+
+/* overgangen tussen wizard-stappen */
+.step-pane.fwd { animation: pane-in-fwd 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+.step-pane.back { animation: pane-in-back 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes pane-in-fwd {
+  from { opacity: 0; transform: translateX(48px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes pane-in-back {
+  from { opacity: 0; transform: translateX(-48px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .step-pane.fwd, .step-pane.back { animation: none; }
+}
+
+.success-pop { animation: success-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes success-pop {
+  from { opacity: 0; transform: scale(0.92) translateY(16px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
 
 .brand-grid {
   display: grid;

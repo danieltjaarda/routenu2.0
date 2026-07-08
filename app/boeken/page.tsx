@@ -75,12 +75,16 @@ export default function BookingPage() {
     });
   }
 
+  const [slideDir, setSlideDir] = useState<"fwd" | "back">("fwd");
+
   function next() {
     setError("");
+    setSlideDir("fwd");
     setStep((s) => Math.min(s + 1, STEPS.length - 1));
   }
   function back() {
     setError("");
+    setSlideDir("back");
     setStep((s) => Math.max(s - 1, 0));
   }
 
@@ -163,7 +167,7 @@ export default function BookingPage() {
   if (done) {
     return (
       <div className="page" style={{ maxWidth: 560 }}>
-        <div className="card" style={{ textAlign: "center", padding: 40 }}>
+        <div className="card success-pop" style={{ textAlign: "center", padding: 40 }}>
           <div style={{ fontSize: 44 }}>✅</div>
           <h1 style={{ marginTop: 12 }}>Aanmelding gelukt!</h1>
           <p style={{ color: "var(--muted)" }}>
@@ -210,7 +214,8 @@ export default function BookingPage() {
         ))}
       </div>
 
-      <div className="card" style={{ marginTop: 18 }}>
+      <div className="card" style={{ marginTop: 18, overflow: "hidden" }}>
+        <div key={step} className={`step-pane ${slideDir}`}>
         {step === 0 && (
           <>
             <h3 style={{ marginTop: 0 }}>Welk merk fatbike heeft u?</h3>
@@ -461,6 +466,7 @@ export default function BookingPage() {
             </div>
           </>
         )}
+        </div>
       </div>
     </div>
   );
