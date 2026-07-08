@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAvailability, saveAvailability } from "@/lib/data";
+import { getAvailability, saveAvailability, getRoutes } from "@/lib/data";
+import { MAX_ROUTE_MINUTES } from "@/lib/routing";
 
 export const dynamic = "force-dynamic";
 
@@ -8,12 +9,25 @@ function todayStr() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-/** GET ?future=1 geeft alleen datums vanaf vandaag (voor de publieke boekingspagina) */
+/** GET ?future=1 geeft alleen datums vanaf vandaag zonder volle routes (voor de publieke boekingspagina) */
 export async function GET(req: NextRequest) {
   let items = await getAvailability();
   if (req.nextUrl.searchParams.get("future")) {
     const today = todayStr();
     items = items.filter((a) => a.date >= today);
+    // datums verbergen waarvan de route de maximale reistijd al heeft bereikt
+    const routes = await getRoutes();
+    const fullDates = new Set(
+      routes
+        .filter(
+          (r) =>
+            r.status !== "afgerond" &&
+            r.durationMinutes != null &&
+            r.durationMinutes >= MAX_ROUTE_MINUTES
+        )
+        .map((r) => r.date)
+    );
+    items = items.filter((a) => !fullDates.has(a.date));
   }
   items.sort((a, b) => (a.date > b.date ? 1 : -1));
   return NextResponse.json(items);

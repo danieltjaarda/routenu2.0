@@ -223,6 +223,16 @@ export default function BookingPage() {
       });
       const data = await res.json();
       if (!res.ok) {
+        if (data.code === "route_full") {
+          // dag zit vol: lijst verversen en terug naar de datumstap
+          const fresh = await fetch("/api/availability?future=1").then((r) => r.json());
+          setAvailability(fresh);
+          setDate("");
+          setSlideDir("back");
+          setStep(3);
+          setError(data.error);
+          return;
+        }
         setError(data.error ?? "Er ging iets mis. Probeer het opnieuw.");
         return;
       }
@@ -551,6 +561,7 @@ export default function BookingPage() {
               </>
             )}
 
+            {error && <div style={{ color: "var(--danger)", fontSize: 13, marginTop: 12 }}>{error}</div>}
             <div className="wizard-nav">
               <button className="btn ghost" onClick={back}>← Terug</button>
             </div>

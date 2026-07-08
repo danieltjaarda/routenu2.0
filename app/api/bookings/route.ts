@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRoutes, upsertRoute, getDrivers, getAvailability } from "@/lib/data";
 import { sendStopNotifications } from "@/lib/notifications";
+import { calcDrivingMinutes, MAX_ROUTE_MINUTES } from "@/lib/routing";
 import type { Route, Stop } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -68,11 +69,26 @@ export async function POST(req: NextRequest) {
       createdAt: new Date().toISOString(),
     } satisfies Route;
   }
+  // capaciteitscheck: route mag maximaal 5,5 uur reistijd hebben
+  const drivingMinutes = await calcDrivingMinutes(
+    { lng: route.startLng, lat: route.startLat },
+    [...route.stops, stop].map((s) => ({ lng: s.lng, lat: s.lat }))
+  );
+  if (drivingMinutes != null && drivingMinutes > MAX_ROUTE_MINUTES) {
+    return NextResponse.json(
+      {
+        error: "Deze dag zit helaas vol voor jouw regio. Kies een andere beschikbare dag.",
+        code: "route_full",
+      },
+      { status: 409 }
+    );
+  }
+
   route.stops.push(stop);
-  // route-berekening is niet meer actueel
+  // geometrie is niet meer actueel; reistijd wel net berekend
   route.geometry = undefined;
   route.distanceKm = undefined;
-  route.durationMinutes = undefined;
+  route.durationMinutes = drivingMinutes ?? undefined;
   await upsertRoute(route);
 
   const drivers = await getDrivers();
