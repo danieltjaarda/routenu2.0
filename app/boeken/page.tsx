@@ -35,6 +35,17 @@ export default function BookingPage() {
   const [aiText, setAiText] = useState("");
   const [aiBusy, setAiBusy] = useState(false);
   const [aiUitleg, setAiUitleg] = useState("");
+  const [aiPicked, setAiPicked] = useState<string[]>([]);
+
+  // AI-gekozen reparaties bovenaan tonen, rest in oorspronkelijke volgorde
+  const sortedServices = useMemo(() => {
+    if (aiPicked.length === 0) return services;
+    const picked = aiPicked
+      .map((slug) => services.find((s) => s.slug === slug))
+      .filter((s): s is NonNullable<typeof s> => Boolean(s));
+    const rest = services.filter((s) => !aiPicked.includes(s.slug));
+    return [...picked, ...rest];
+  }, [services, aiPicked]);
 
   useEffect(() => {
     fetch("/api/availability?future=1").then((r) => r.json()).then(setAvailability);
@@ -106,6 +117,7 @@ export default function BookingPage() {
         return;
       }
       setSelectedRepairs(data.repairs);
+      setAiPicked(data.repairs);
       setDescription(aiText.trim());
       setAiUitleg(data.uitleg || "Reparaties geselecteerd op basis van je omschrijving.");
     } finally {
@@ -316,7 +328,7 @@ export default function BookingPage() {
               Of selecteer zelf één of meerdere reparaties. Staat jouw reparatie er niet tussen? Kies dan &lsquo;Overige&rsquo;.
             </p>
             <div className="repair-grid">
-              {services.map((s) => {
+              {sortedServices.map((s) => {
                 const on = selectedRepairs.includes(s.slug);
                 return (
                   <button key={s.slug} className={`repair-card ${on ? "selected" : ""}`} onClick={() => toggleRepair(s.slug)}>
