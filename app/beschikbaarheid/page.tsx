@@ -106,8 +106,8 @@ export default function AvailabilityPage() {
     <div className="page">
       <h1>Beschikbaarheid</h1>
       <p className="subtitle">
-        Vink de dagen aan waarop de chauffeur beschikbaar is en kies per dag de provincies. Klanten zien
-        alleen dagen die voor hun provincie beschikbaar zijn (<code>/boeken</code>).
+        Vink de dagen aan waarop de chauffeur beschikbaar is en kies per dag de regio&apos;s op de kaart.
+        Klanten zien alleen dagen die voor hun regio beschikbaar zijn (<code>/boeken</code>).
       </p>
 
       <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 12, flexWrap: "wrap" }}>
@@ -171,7 +171,7 @@ export default function AvailabilityPage() {
                     {on
                       ? provs.length === PROVINCES.length
                         ? "✓ Heel Nederland"
-                        : `✓ ${provs.length} provincie${provs.length > 1 ? "s" : ""}`
+                        : `✓ ${provs.length} regio${provs.length > 1 ? "'s" : ""}`
                       : "Niet beschikbaar"}
                   </span>
                 </button>
@@ -208,7 +208,7 @@ export default function AvailabilityPage() {
               <span style={{ fontSize: 13, color: "var(--muted)" }}>
                 {provincesFor(mapDate).length === PROVINCES.length
                   ? "Heel Nederland"
-                  : `${provincesFor(mapDate).length} provincie${provincesFor(mapDate).length === 1 ? "" : "s"} geselecteerd`}
+                  : `${provincesFor(mapDate).length} regio${provincesFor(mapDate).length === 1 ? "" : "'s"} geselecteerd`}
               </span>
               <span style={{ display: "flex", gap: 10 }}>
                 <button className="btn ghost small" onClick={() => save(mapDate, true, [...PROVINCES])}>

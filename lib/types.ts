@@ -62,18 +62,38 @@ export interface Driver {
 export const PROVINCES = [
   "Groningen",
   "Friesland",
-  "Drenthe",
-  "Overijssel",
+  "Drenthe (noord)",
+  "Drenthe (zuid)",
+  "Overijssel (west)",
+  "Overijssel (oost)",
   "Flevoland",
-  "Gelderland",
+  "Gelderland (west)",
+  "Gelderland (oost)",
   "Utrecht",
   "Noord-Holland",
-  "Zuid-Holland",
+  "Zuid-Holland (noord)",
+  "Zuid-Holland (zuid)",
   "Zeeland",
   "Noord-Brabant",
   "Limburg",
 ] as const;
 export type Province = (typeof PROVINCES)[number];
+
+/** Gesplitste provincies: scheidslijn in graden (lat = noord/zuid, lon = west/oost) */
+const PROVINCE_SPLITS: Record<string, { axis: "lat" | "lon"; value: number }> = {
+  Drenthe: { axis: "lat", value: 52.908 },
+  Overijssel: { axis: "lon", value: 6.4335 },
+  Gelderland: { axis: "lon", value: 5.9145 },
+  "Zuid-Holland": { axis: "lat", value: 51.9915 },
+};
+
+/** Bepaal de regio (evt. provinciehelft) op basis van provincienaam en coördinaten */
+export function regionForLocation(province: string, lng: number, lat: number): string {
+  const split = PROVINCE_SPLITS[province];
+  if (!split) return province;
+  if (split.axis === "lat") return `${province} (${lat >= split.value ? "noord" : "zuid"})`;
+  return `${province} (${lng >= split.value ? "oost" : "west"})`;
+}
 
 /** Datum waarop een chauffeur beschikbaar is voor klant-boekingen */
 export interface Availability {

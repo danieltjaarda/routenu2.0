@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import AddressSearch from "@/components/AddressSearch";
 import { BRANDS, type BikeBrand, type RepairService } from "@/lib/catalog";
 import type { Availability } from "@/lib/types";
-import { PROVINCES } from "@/lib/types";
+import { PROVINCES, regionForLocation } from "@/lib/types";
 
 const STEPS = ["Merk", "Model", "Reparatie", "Datum", "Gegevens"] as const;
 
@@ -111,10 +111,13 @@ export default function BookingPage() {
         return;
       }
       const m = /POINT\((\S+) (\S+)\)/.exec(doc.centroide_ll ?? "");
-      setProvince(normalizeProvince(doc.provincienaam ?? ""));
+      const lng = m ? Number(m[1]) : 0;
+      const lat = m ? Number(m[2]) : 0;
+      // provincie evt. omzetten naar regiohelft (bijv. "Zuid-Holland (noord)")
+      setProvince(regionForLocation(normalizeProvince(doc.provincienaam ?? ""), lng, lat));
       // adres alvast invullen voor de laatste stap
       setAddress(doc.weergavenaam);
-      if (m) setCoords({ lng: Number(m[1]), lat: Number(m[2]) });
+      if (m) setCoords({ lng, lat });
     } catch {
       setLookupError("Zoeken mislukt. Probeer het opnieuw.");
     } finally {
@@ -513,7 +516,7 @@ export default function BookingPage() {
             ) : (
               <>
                 <div className="pc-found">
-                  <span>✓ {address} — provincie <strong>{province}</strong></span>
+                  <span>✓ {address} — regio <strong>{province}</strong></span>
                   <button
                     type="button"
                     className="pc-change"
