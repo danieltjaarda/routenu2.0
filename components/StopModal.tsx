@@ -55,8 +55,8 @@ export default function StopModal({ initial, onSave, onClose }: Props) {
   }
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <form className="modal" onClick={(e) => e.stopPropagation()} onSubmit={submit}>
+    <div className="modal-backdrop">
+      <form className="modal" onSubmit={submit}>
         <button type="button" className="close" onClick={onClose}>✕</button>
         <h2>{initial ? "Stop bewerken" : "Stop toevoegen"}</h2>
 

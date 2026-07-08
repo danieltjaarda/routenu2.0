@@ -140,8 +140,8 @@ export default function OverviewPage() {
       )}
 
       {showNew && (
-        <div className="modal-backdrop" onClick={() => setShowNew(false)}>
-          <form className="modal" onClick={(e) => e.stopPropagation()} onSubmit={createRoute}>
+        <div className="modal-backdrop">
+          <form className="modal" onSubmit={createRoute}>
             <button type="button" className="close" onClick={() => setShowNew(false)}>✕</button>
             <h2>Nieuwe route</h2>
             <label className="field">
