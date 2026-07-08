@@ -100,21 +100,21 @@ export default function BookingPage() {
     setLookupBusy(true);
     setLookupError("");
     try {
-      const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
-      const q = `${huisnummer.trim()} ${pc}`;
-      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?access_token=${token}&country=nl&language=nl&types=address&limit=1`;
+      // PDOK Locatieserver: officiële BAG-adressen incl. provincie
+      const q = `${pc} ${huisnummer.trim()}`;
+      const url = `https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=${encodeURIComponent(q)}&fq=type:adres&rows=1&fl=weergavenaam,provincienaam,centroide_ll,postcode`;
       const res = await fetch(url);
       const data = await res.json();
-      const f = data.features?.[0];
-      const region = f?.context?.find((c: { id: string; text: string }) => c.id.startsWith("region"))?.text ?? "";
-      if (!f || !region) {
+      const doc = data.response?.docs?.[0];
+      if (!doc || doc.postcode !== pc) {
         setLookupError("Adres niet gevonden. Controleer postcode en huisnummer.");
         return;
       }
-      setProvince(normalizeProvince(region));
+      const m = /POINT\((\S+) (\S+)\)/.exec(doc.centroide_ll ?? "");
+      setProvince(normalizeProvince(doc.provincienaam ?? ""));
       // adres alvast invullen voor de laatste stap
-      setAddress(f.place_name);
-      setCoords({ lng: f.center[0], lat: f.center[1] });
+      setAddress(doc.weergavenaam);
+      if (m) setCoords({ lng: Number(m[1]), lat: Number(m[2]) });
     } catch {
       setLookupError("Zoeken mislukt. Probeer het opnieuw.");
     } finally {
