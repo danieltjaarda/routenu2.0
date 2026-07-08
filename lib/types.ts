@@ -58,3 +58,9 @@ export interface Driver {
   phone?: string;
   email?: string;
 }
+
+/** Datum waarop een chauffeur beschikbaar is voor klant-boekingen */
+export interface Availability {
+  date: string; // YYYY-MM-DD
+  driverId: string;
+}

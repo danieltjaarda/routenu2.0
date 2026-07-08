@@ -1,8 +1,9 @@
 import { kvGet, kvSet } from "./store";
-import type { Route, Driver } from "./types";
+import type { Route, Driver, Availability } from "./types";
 
 const ROUTES_KEY = "routenu:routes";
 const DRIVERS_KEY = "routenu:drivers";
+const AVAILABILITY_KEY = "routenu:availability";
 
 export async function getRoutes(): Promise<Route[]> {
   return (await kvGet<Route[]>(ROUTES_KEY)) ?? [];
@@ -45,4 +46,12 @@ export async function getDrivers(): Promise<Driver[]> {
 
 export async function saveDrivers(drivers: Driver[]): Promise<void> {
   await kvSet(DRIVERS_KEY, drivers);
+}
+
+export async function getAvailability(): Promise<Availability[]> {
+  return (await kvGet<Availability[]>(AVAILABILITY_KEY)) ?? [];
+}
+
+export async function saveAvailability(items: Availability[]): Promise<void> {
+  await kvSet(AVAILABILITY_KEY, items);
 }

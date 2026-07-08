@@ -380,6 +380,139 @@ table.data tr:hover td { background: var(--bg); }
   font-size: 14px;
 }
 
+/* ---------- beschikbaarheid ---------- */
+.avail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+.avail-day {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 12px 10px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font: inherit;
+}
+.avail-day .d { font-weight: 700; font-size: 13px; color: var(--dark); text-transform: capitalize; }
+.avail-day .s { font-size: 11px; color: var(--muted); }
+.avail-day.weekend { background: #fafbfc; }
+.avail-day.on { border-color: var(--success); background: #effaf5; }
+.avail-day.on .s { color: var(--success); font-weight: 600; }
+
+/* ---------- boekingswizard ---------- */
+.steps { display: flex; gap: 6px; flex-wrap: wrap; }
+.step {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.step .n {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--border);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+.step.active { border-color: var(--primary); color: var(--dark); }
+.step.active .n { background: var(--primary); color: #fff; }
+.step.done { color: var(--success); }
+.step.done .n { background: var(--success); color: #fff; }
+
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.brand-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  padding: 26px 12px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--dark);
+  cursor: pointer;
+  font-family: inherit;
+}
+.brand-card:hover { border-color: var(--primary); background: #f2fbfd; }
+
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.model-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  padding: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.model-card:hover, .model-card.selected { border-color: var(--primary); background: #f2fbfd; }
+.model-card .img {
+  position: relative;
+  height: 100px;
+  border-radius: 8px;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.model-card .img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+}
+.model-card .img .fallback { font-size: 34px; position: absolute; }
+.model-card .name { font-size: 13px; font-weight: 700; color: var(--dark); text-align: center; }
+
+.date-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.date-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 14px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  color: var(--dark);
+  text-transform: capitalize;
+  text-align: left;
+}
+.date-card:hover, .date-card.selected { border-color: var(--primary); background: #f2fbfd; }
+
+.wizard-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+.wizard-nav .btn:only-child { margin-left: 0; }
+
 @media (max-width: 1000px) {
   .planner { grid-template-columns: 1fr; height: auto; }
   .planner .map-area { height: 420px; }
