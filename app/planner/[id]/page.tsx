@@ -99,9 +99,11 @@ export default function PlannerPage() {
     if (!route || route.stops.length === 0 || !TOKEN) return;
     setCalculating(true);
     try {
+      // startadres is automatisch ook het eindadres (terugreis telt mee)
       const coords = [
         `${route.startLng},${route.startLat}`,
         ...route.stops.map((s) => `${s.lng},${s.lat}`),
+        `${route.startLng},${route.startLat}`,
       ].join(";");
       const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${coords}?geometries=geojson&overview=full&access_token=${TOKEN}`;
       const res = await fetch(url);
@@ -119,6 +121,8 @@ export default function PlannerPage() {
         cumulative += s.serviceMinutes ?? 30;
         return { ...s, etaMinutes: eta };
       });
+      // terugreis naar het startadres meetellen in de totale tijd
+      cumulative += r.legs[r.legs.length - 1].duration / 60;
       await persist({
         ...route,
         stops,

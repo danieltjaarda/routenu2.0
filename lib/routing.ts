@@ -2,7 +2,8 @@
 export const MAX_ROUTE_MINUTES = 330;
 
 /**
- * Bereken de rijtijd in minuten voor start + stops in volgorde
+ * Bereken de rijtijd in minuten voor start + stops in volgorde,
+ * inclusief de terugreis naar het startadres (start = eindadres),
  * via de Mapbox Directions API. Geeft null als berekening niet lukt.
  */
 export async function calcDrivingMinutes(
@@ -12,7 +13,7 @@ export async function calcDrivingMinutes(
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
   if (!token || stops.length === 0) return null;
 
-  const coords = [start, ...stops].map((c) => `${c.lng},${c.lat}`).join(";");
+  const coords = [start, ...stops, start].map((c) => `${c.lng},${c.lat}`).join(";");
   try {
     const res = await fetch(
       `https://api.mapbox.com/directions/v5/mapbox/driving/${coords}?overview=false&access_token=${token}`
