@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import MapView from "@/components/MapView";
 import type { Route, Stop, CostItem } from "@/lib/types";
 
 function fmtTime(startTime: string, offsetMin: number) {
@@ -20,6 +21,7 @@ export default function DriverRoutePage() {
   const [workedHours, setWorkedHours] = useState("");
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState("");
+  const [showMap, setShowMap] = useState(false);
 
   useEffect(() => {
     fetch(`/api/routes/${id}`)
@@ -157,6 +159,24 @@ export default function DriverRoutePage() {
       </p>
 
       {flash && <div className="notice">{flash}</div>}
+
+      {route.stops.length > 0 && (
+        <button className="btn ghost block" style={{ marginBottom: 16 }} onClick={() => setShowMap(true)}>
+          🗺 Bekijk kaart met alle stops
+        </button>
+      )}
+
+      {showMap && (
+        <div className="map-overlay">
+          <div className="map-overlay-head">
+            <strong>{route.name} · {route.stops.length} stops</strong>
+            <button className="icon-btn big" onClick={() => setShowMap(false)}>✕</button>
+          </div>
+          <div className="map-overlay-body">
+            <MapView startLng={route.startLng} startLat={route.startLat} stops={route.stops} geometry={route.geometry} />
+          </div>
+        </div>
+      )}
 
       {route.status === "gepland" && (
         <div className="card" style={{ marginBottom: 20 }}>

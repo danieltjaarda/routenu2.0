@@ -1027,12 +1027,66 @@ table.data tr:hover td { background: var(--bg); }
 .stop-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
 .stop-actions .btn { text-align: center; font-size: 16px; padding: 14px 18px; }
 
+/* Kaart-overlay (chauffeur) */
+.map-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+.map-overlay-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: #fff;
+}
+.map-overlay-head strong { font-size: 15px; color: var(--dark); }
+.map-overlay-body { flex: 1; position: relative; }
+.map-overlay-body .map { position: absolute; inset: 0; }
+
+/* ---------- mobiel ---------- */
+@media (max-width: 720px) {
+  .topbar { padding: 0 12px; gap: 10px; }
+  .topbar nav {
+    gap: 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .topbar nav::-webkit-scrollbar { display: none; }
+  .topbar nav a { font-size: 13px; padding: 6px 8px; white-space: nowrap; }
+
+  table.data { display: block; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+}
+
 @media (max-width: 640px) {
-  .page { padding: 16px 14px; }
+  .page { padding: 16px 14px 48px; }
+  .page h1 { font-size: 21px; }
   .btn { padding: 12px 18px; }
-  .field input, .field select { font-size: 16px; } /* voorkomt inzoomen op iOS */
+  input, select, textarea { font-size: 16px; } /* voorkomt inzoomen op iOS */
   .cost-row input.amount { width: 84px; }
   .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .stat-card { padding: 12px 10px; }
   .stat-card .value { font-size: 17px; }
+  .card { padding: 16px 14px; }
+
+  .modal-backdrop { padding: 10px; align-items: center; }
+  .modal { padding: 20px 16px; max-height: 92dvh; overflow-y: auto; }
+
+  .wizard-nav .btn { flex: 1; }
+  .ai-bar .ai-row { flex-wrap: wrap; }
+  .ai-bar .ai-row .btn { width: 100%; }
+  .brand-grid, .model-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .date-grid { grid-template-columns: 1fr; }
+  .avail-grid { grid-template-columns: repeat(2, 1fr); }
+  .nl-map { width: 100%; }
+  .customer-tag { display: none; }
+
+  .success-hero { padding-top: 16px; }
+  .done-card { padding: 16px 14px; }
 }
