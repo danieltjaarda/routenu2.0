@@ -213,6 +213,9 @@ export default function PlannerPage() {
               <button className="icon-btn" title="Wijzig" onClick={() => setShowStartEdit(true)}>✎</button>
             </div>
           )}
+          <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 6 }}>
+            Eindadres: gelijk aan startadres (terugreis telt mee in de reistijd)
+          </div>
         </div>
 
         <button className="btn block" onClick={() => setModalStop("new")}>+ Stop toevoegen</button>
@@ -297,6 +300,16 @@ export default function PlannerPage() {
               </div>
             </div>
           ))}
+          <div className="tl-item">
+            <div className="time">
+              {route.durationMinutes != null ? fmtTime(route.startTime, route.durationMinutes) : "--:--"}
+            </div>
+            <div className="dot start">E</div>
+            <div className="body">
+              <div className="title">Eind adres</div>
+              <div className="sub">{route.startAddress || "Gelijk aan startadres"}</div>
+            </div>
+          </div>
         </div>
         <div className="actions">
           <div style={{ display: "flex", gap: 10 }}>
