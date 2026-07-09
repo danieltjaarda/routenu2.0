@@ -1,11 +1,13 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
 function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
+  const [showAdmin, setShowAdmin] = useState(Boolean(params.get("from")));
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -32,11 +34,38 @@ function LoginForm() {
     }
   }
 
+  if (!showAdmin) {
+    return (
+      <div className="page" style={{ maxWidth: 420 }}>
+        <div style={{ marginTop: 50, textAlign: "center" }}>
+          <h1 style={{ marginBottom: 6 }}>Waar wil je heen?</h1>
+          <p style={{ color: "var(--muted)", marginTop: 0 }}>Kies hieronder je omgeving.</p>
+        </div>
+        <Link href="/chauffeur" className="portal-card">
+          <span className="portal-ic">🚐</span>
+          <span>
+            <strong>Chauffeur</strong>
+            <span className="portal-sub">Bekijk en rijd je route van vandaag</span>
+          </span>
+          <span className="portal-arrow">→</span>
+        </Link>
+        <button className="portal-card" onClick={() => setShowAdmin(true)}>
+          <span className="portal-ic">🔒</span>
+          <span>
+            <strong>Admin</strong>
+            <span className="portal-sub">Routes plannen, tarieven en analytics</span>
+          </span>
+          <span className="portal-arrow">→</span>
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="page" style={{ maxWidth: 400 }}>
       <div className="card" style={{ marginTop: 60, padding: 32, textAlign: "center" }}>
         <div style={{ fontSize: 36 }}>🔒</div>
-        <h1 style={{ margin: "10px 0 4px" }}>Inloggen</h1>
+        <h1 style={{ margin: "10px 0 4px" }}>Admin inloggen</h1>
         <p style={{ color: "var(--muted)", fontSize: 14, marginTop: 0 }}>
           Dit gedeelte is alleen voor beheerders.
         </p>
@@ -54,6 +83,9 @@ function LoginForm() {
             {busy ? "Bezig..." : "Inloggen"}
           </button>
         </form>
+        <button className="linklike" onClick={() => setShowAdmin(false)} style={{ marginTop: 14 }}>
+          ← Terug naar keuzemenu
+        </button>
       </div>
     </div>
   );

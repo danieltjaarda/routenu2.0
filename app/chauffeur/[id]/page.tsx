@@ -14,6 +14,7 @@ export default function DriverRoutePage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [route, setRoute] = useState<Route | null>(null);
+  const [current, setCurrent] = useState(0);
   const [startOdometer, setStartOdometer] = useState("");
   const [endOdometer, setEndOdometer] = useState("");
   const [workedHours, setWorkedHours] = useState("");
@@ -25,6 +26,8 @@ export default function DriverRoutePage() {
       .then((r) => r.json())
       .then((r: Route) => {
         setRoute(r);
+        const firstOpen = r.stops.findIndex((s) => s.status === "open");
+        setCurrent(firstOpen === -1 ? Math.max(0, r.stops.length - 1) : firstOpen);
         if (r.startOdometer != null) setStartOdometer(String(r.startOdometer));
         if (r.endOdometer != null) setEndOdometer(String(r.endOdometer));
         if (r.workedHours != null) setWorkedHours(String(r.workedHours));
@@ -87,12 +90,26 @@ export default function DriverRoutePage() {
   }
 
   async function completeStop(stop: Stop) {
-    updateStop(stop.id, { status: "afgerond", completedAt: new Date().toISOString() });
+    if (!route) return;
+    const stops = route.stops.map((s) =>
+      s.id === stop.id ? { ...s, status: "afgerond" as const, completedAt: new Date().toISOString() } : s
+    );
+    persist({ ...route, stops });
     fetch("/api/notify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ routeId: id, event: "stop_completed", stopId: stop.id }),
     });
+    // automatisch door naar de volgende open stop
+    const next = stops.findIndex((s, i) => i > current && s.status === "open");
+    const anyOpen = stops.findIndex((s) => s.status === "open");
+    if (next !== -1) setCurrent(next);
+    else if (anyOpen !== -1) setCurrent(anyOpen);
+  }
+
+  /** Opent Apple Kaarten (iPhone) of Google Maps (Android) met het adres als bestemming */
+  function mapsUrl(address: string) {
+    return `https://maps.apple.com/?daddr=${encodeURIComponent(address)}&dirflg=d`;
   }
 
   async function finishRoute() {
@@ -174,78 +191,132 @@ export default function DriverRoutePage() {
         </div>
       )}
 
-      {route.stops.map((s, i) => (
-        <div key={s.id} className={`driver-stop ${s.status === "afgerond" ? "done" : ""}`}>
-          <div className="head">
-            <div className="num" style={{ width: 28, height: 28, borderRadius: "50%", background: s.status === "afgerond" ? "var(--success)" : "var(--primary)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 13, flex: "none" }}>
-              {s.status === "afgerond" ? "✓" : i + 1}
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, color: "var(--dark)" }}>{s.notes || s.customerName}</div>
-              <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 2 }}>
-                {s.customerName} · {s.address}
+      {route.status !== "onderweg" &&
+        route.stops.map((s, i) => (
+          <div key={s.id} className={`driver-stop ${s.status === "afgerond" ? "done" : ""}`}>
+            <div className="head">
+              <div className="num" style={{ width: 28, height: 28, borderRadius: "50%", background: s.status === "afgerond" ? "var(--success)" : "var(--primary)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 13, flex: "none" }}>
+                {s.status === "afgerond" ? "✓" : i + 1}
               </div>
-              <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>
-                {s.etaMinutes != null && <>Gepland: {fmtTime(route.startTime, s.etaMinutes)}{" · "}</>}
-                <span className={`badge ${s.type}`}>{s.type}</span>
-                {s.amountDue != null && <> · Te ontvangen: € {s.amountDue.toFixed(2)}</>}
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, color: "var(--dark)" }}>{s.notes || s.customerName}</div>
+                <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 2 }}>
+                  {s.customerName} · {s.address}
+                </div>
+                <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>
+                  {s.etaMinutes != null && <>Gepland: {fmtTime(route.startTime, s.etaMinutes)}{" · "}</>}
+                  <span className={`badge ${s.type}`}>{s.type}</span>
+                  {s.amountDue != null && <> · Te ontvangen: € {s.amountDue.toFixed(2)}</>}
+                </div>
               </div>
-              {s.phone && (
-                <a href={`tel:${s.phone}`} style={{ fontSize: 13, color: "var(--primary-dark)", fontWeight: 600 }}>
-                  ✆ {s.phone}
-                </a>
-              )}
             </div>
           </div>
+        ))}
 
-          {route.status === "onderweg" && (
-            <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid var(--border)" }}>
-              <label className="field" style={{ maxWidth: 240 }}>
-                Ontvangen bedrag (EUR)
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="0.00"
-                  value={s.receivedAmount ?? ""}
-                  onChange={(e) =>
-                    updateStop(s.id, { receivedAmount: e.target.value === "" ? undefined : parseFloat(e.target.value) })
-                  }
-                />
-              </label>
+      {route.status === "onderweg" && route.stops.length > 0 && (() => {
+        const s = route.stops[Math.min(current, route.stops.length - 1)];
+        const i = route.stops.indexOf(s);
+        const doneCount = route.stops.filter((x) => x.status === "afgerond").length;
+        return (
+          <div className="driver-step">
+            <div className="step-progress">
+              <div className="step-progress-text">
+                Stop {i + 1} van {route.stops.length} · {doneCount} afgerond
+              </div>
+              <div className="step-progress-bar">
+                <div style={{ width: `${(doneCount / route.stops.length) * 100}%` }} />
+              </div>
+            </div>
 
-              <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>Kosten onderdelen</div>
-              {(s.costs ?? []).map((c, ci) => (
-                <div className="cost-row" key={ci}>
+            <div className="step-nav">
+              <button className="icon-btn big" disabled={i === 0} onClick={() => setCurrent(i - 1)}>←</button>
+              <div className="step-dots">
+                {route.stops.map((x, xi) => (
+                  <button
+                    key={x.id}
+                    className={`step-dot ${xi === i ? "active" : ""} ${x.status === "afgerond" ? "done" : ""}`}
+                    onClick={() => setCurrent(xi)}
+                  >
+                    {x.status === "afgerond" ? "✓" : xi + 1}
+                  </button>
+                ))}
+              </div>
+              <button className="icon-btn big" disabled={i === route.stops.length - 1} onClick={() => setCurrent(i + 1)}>→</button>
+            </div>
+
+            <div className={`card stop-focus ${s.status === "afgerond" ? "done" : ""}`}>
+              <div style={{ fontSize: 12, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 0.5, fontWeight: 700 }}>
+                {s.status === "afgerond" ? "✓ Afgerond" : `Stop ${i + 1}`}
+                {s.etaMinutes != null && <> · gepland {fmtTime(route.startTime, s.etaMinutes)}</>}
+              </div>
+              <h2 style={{ margin: "6px 0 2px" }}>{s.notes || s.customerName}</h2>
+              <div style={{ fontSize: 14, color: "var(--muted)" }}>{s.customerName}</div>
+              <div style={{ fontSize: 15, color: "var(--dark)", marginTop: 8 }}>{s.address}</div>
+              {s.amountDue != null && (
+                <div style={{ fontSize: 15, fontWeight: 800, color: "var(--dark)", marginTop: 8 }}>
+                  Te ontvangen: € {s.amountDue.toFixed(2)}
+                </div>
+              )}
+
+              <div className="stop-actions">
+                <a className="btn block" href={mapsUrl(s.address)} target="_blank" rel="noopener noreferrer">
+                  🗺 Navigeer (Kaarten)
+                </a>
+                {s.phone && (
+                  <a className="btn ghost block" href={`tel:${s.phone}`}>✆ Bel klant</a>
+                )}
+              </div>
+
+              <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid var(--border)" }}>
+                <label className="field">
+                  Ontvangen bedrag (EUR)
                   <input
-                    style={{ flex: 1 }}
-                    placeholder="Bijv. binnenband, materiaal..."
-                    value={c.label}
-                    onChange={(e) => updateCost(s, ci, { label: e.target.value })}
-                  />
-                  <input
-                    className="amount"
                     type="number"
                     step="0.01"
                     min="0"
+                    inputMode="decimal"
                     placeholder="0.00"
-                    value={c.amount || ""}
-                    onChange={(e) => updateCost(s, ci, { amount: parseFloat(e.target.value) || 0 })}
+                    value={s.receivedAmount ?? ""}
+                    onChange={(e) =>
+                      updateStop(s.id, { receivedAmount: e.target.value === "" ? undefined : parseFloat(e.target.value) })
+                    }
                   />
-                  <button className="icon-btn" onClick={() => removeCost(s, ci)}>✕</button>
-                </div>
-              ))}
-              <button className="btn ghost small" onClick={() => addCost(s)}>+ Kostenpost</button>
+                </label>
 
-              {s.status !== "afgerond" && (
-                <div style={{ marginTop: 12 }}>
-                  <button className="btn small" onClick={() => completeStop(s)}>✓ Stop afronden</button>
-                </div>
-              )}
+                <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>Kosten onderdelen</div>
+                {(s.costs ?? []).map((c, ci) => (
+                  <div className="cost-row" key={ci}>
+                    <input
+                      style={{ flex: 1, minWidth: 0 }}
+                      placeholder="Bijv. binnenband..."
+                      value={c.label}
+                      onChange={(e) => updateCost(s, ci, { label: e.target.value })}
+                    />
+                    <input
+                      className="amount"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      inputMode="decimal"
+                      placeholder="0.00"
+                      value={c.amount || ""}
+                      onChange={(e) => updateCost(s, ci, { amount: parseFloat(e.target.value) || 0 })}
+                    />
+                    <button className="icon-btn" onClick={() => removeCost(s, ci)}>✕</button>
+                  </div>
+                ))}
+                <button className="btn ghost small" onClick={() => addCost(s)}>+ Kostenpost</button>
+
+                {s.status !== "afgerond" && (
+                  <button className="btn block" style={{ marginTop: 14 }} onClick={() => completeStop(s)}>
+                    ✓ Stop afronden
+                  </button>
+                )}
+              </div>
             </div>
-          )}
-        </div>
-      ))}
+          </div>
+        );
+      })()}
 
       {route.status === "onderweg" && (
         <div className="card" style={{ marginTop: 24 }}>

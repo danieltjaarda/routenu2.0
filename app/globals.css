@@ -937,3 +937,102 @@ table.data tr:hover td { background: var(--bg); }
   .planner .map-area .map { position: absolute; }
   .planner .rightbar { border-left: none; border-top: 1px solid var(--border); }
 }
+
+/* Keuzemenu (chauffeur of admin) */
+.portal-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-top: 14px;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+.portal-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+  transform: translateY(-1px);
+}
+.portal-card .portal-ic { font-size: 28px; }
+.portal-card > span:nth-child(2) { flex: 1; display: flex; flex-direction: column; }
+.portal-card strong { color: var(--dark); font-size: 16px; }
+.portal-card .portal-sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.portal-card .portal-arrow { color: var(--primary); font-size: 20px; font-weight: 700; }
+
+.linklike {
+  background: none;
+  border: none;
+  color: var(--primary-dark);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Chauffeur: stap-voor-stap weergave */
+.step-progress { margin-bottom: 12px; }
+.step-progress-text { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+.step-progress-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+.step-progress-bar > div {
+  height: 100%;
+  background: var(--success);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+.step-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.icon-btn.big {
+  width: 42px;
+  height: 42px;
+  font-size: 18px;
+  flex: none;
+}
+.step-dots {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 2px;
+  scrollbar-width: none;
+}
+.step-dots::-webkit-scrollbar { display: none; }
+.step-dot {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 13px;
+  flex: none;
+  cursor: pointer;
+}
+.step-dot.active { border-color: var(--primary); background: var(--primary); color: #fff; }
+.step-dot.done { border-color: var(--success); background: var(--success); color: #fff; }
+.step-dot.done.active { outline: 2px solid var(--dark); }
+.stop-focus.done { border-color: var(--success); }
+.stop-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.stop-actions .btn { text-align: center; font-size: 16px; padding: 14px 18px; }
+
+@media (max-width: 640px) {
+  .page { padding: 16px 14px; }
+  .btn { padding: 12px 18px; }
+  .field input, .field select { font-size: 16px; } /* voorkomt inzoomen op iOS */
+  .cost-row input.amount { width: 84px; }
+  .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stat-card { padding: 12px 10px; }
+  .stat-card .value { font-size: 17px; }
+}

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { COOKIE_NAME, authToken } from "@/lib/auth";
 
-// Publiek: klantpagina + de endpoints die de boekingswizard gebruikt
-const PUBLIC_PREFIXES = ["/boeken", "/login", "/api/login", "/api/bookings", "/api/ai-select"];
+// Publiek: klantpagina + chauffeurspagina + de endpoints die zij gebruiken
+const PUBLIC_PREFIXES = ["/boeken", "/chauffeur", "/login", "/api/login", "/api/bookings", "/api/ai-select"];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -12,7 +12,20 @@ export async function middleware(req: NextRequest) {
   }
 
   // de wizard leest beschikbaarheid en tarieven; alleen GET is publiek
-  if (req.method === "GET" && (pathname === "/api/services" || pathname === "/api/availability")) {
+  if (
+    req.method === "GET" &&
+    (pathname === "/api/services" || pathname === "/api/availability" || pathname === "/api/drivers")
+  ) {
+    return NextResponse.next();
+  }
+
+  // chauffeur: routes lezen en bijwerken (aanmaken/verwijderen blijft admin)
+  if ((req.method === "GET" || req.method === "PUT") && pathname.startsWith("/api/routes")) {
+    return NextResponse.next();
+  }
+
+  // chauffeur verstuurt notificaties bij starten/afronden van stops
+  if (req.method === "POST" && pathname === "/api/notify") {
     return NextResponse.next();
   }
 
